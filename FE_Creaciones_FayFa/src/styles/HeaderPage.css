@@ -1,0 +1,200 @@
+*{
+    padding: 0;
+    margin: 0;
+  }
+  
+  .navbar {
+      background-color: #000000; /* Fondo negro */
+      padding: 20px 0;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 110px;
+      z-index: 100;
+      transition: background-color 0.3s ease;
+  }
+  
+  .navbar-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 10px;
+  }
+  
+  /* Logo */
+  .navbar-logo {
+      color: #d4af37; /* Logo dorado */
+      font-size: 24px;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: color 0.3s ease;
+  }
+  
+  .navbar-logo:hover {
+      color: #ffffff; 
+  }
+  
+  /* Menú */
+  .navbar-menu {
+      list-style: none;
+      display: flex;
+      gap: 20px; /* Espacio entre los elementos */
+  }
+  
+  .navbar-item {
+      position: relative;
+  }
+  
+  .navbar-link {
+      color: #ffffff; 
+      text-transform: uppercase;
+      font-size: 16px;
+      text-decoration: none;
+      padding: 10px;
+      transition: color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .navbar-link:hover {
+      color: #d4af37;
+      transform: scale(1.1); 
+  }
+  
+  .navbar-link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background-color: #d4af37; /* Subrayado dorado */
+      transition: width 0.3s ease;
+  }
+  
+  .navbar-link:hover::after {
+      width: 100%; /* Subrayado completo al hacer hover */
+  }
+  
+  .navbar.scrolled {
+      background-color: rgba(0, 0, 0, 0.9); 
+  }
+  
+  /* Inputs */
+  .input-container {
+      margin-left: 50px;
+      width: 220px;
+      position: relative;
+  }
+  
+  .icon {
+      position: absolute;
+      right: 10px;
+      top: calc(50% + 5px);
+      transform: translateY(calc(-50% - 5px));
+  }
+  
+  .input {
+      width: 100%;
+      height: 40px;
+      padding: 10px;
+      transition: .2s linear;
+      border: 2.5px solid black;
+      border-radius: 7px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+  }
+  
+  .input:focus {
+      outline: none;
+      border: 0.5px solid black;
+      box-shadow: -5px -5px 0px black;
+  }
+  
+  .input-container:hover > .icon {
+      animation: anim 1s linear infinite;
+  }
+  
+  @keyframes anim {
+      0%,
+      100% {
+          transform: translateY(calc(-50% - 5px)) scale(1);
+      }
+  
+      50% {
+          transform: translateY(calc(-50% - 5px)) scale(1.1);
+      }
+  }
+  
+  #logoEm{
+   width: 100px;
+   margin-right: 70px;
+   border-radius: 10px;
+  }
+  
+  #tiposRo{
+    background-color: #000000;
+    color: #ffffff;
+  }
+  
+  
+  
+  /* Dispositivos medianos */
+  @media (max-width: 800px) { 
+    #logoEm{
+     margin-left: 40%;
+     }
+  
+  
+    .navbar-container {
+      flex-direction: column;
+      text-align: center;
+      width: 100%;
+      align-items: flex-start;
+      background-color: #000000;
+    }
+  
+  
+    .navbar-logo{
+      margin-left: 34%;
+    }
+  
+    .navbar-menu {
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+      margin-left: 32%;
+      font-size: 1.5em;
+    }
+  
+    .input-container {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+  
+  /* Dispositivos pequeños */
+  @media (max-width: 480px) {
+    .navbar {
+      padding: 10px 0;
+      height: auto;
+    }
+  
+    .navbar-logo {
+      font-size: 25px;
+      margin-right: 20%px;
+    }
+  
+    .navbar-menu {
+      gap: 5px;
+      font-size: 14px;
+      margin-right: 50%;
+    }
+  
+    .input-container {
+      width: 100%;
+    }
+  }
+  
