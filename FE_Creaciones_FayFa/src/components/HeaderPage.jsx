@@ -1,6 +1,7 @@
 import React from 'react'
 import '../styles/HeaderPage.css'
 import logoS from '../assets/img/logoS.jpg';
+import { Link } from "react-router-dom";
 
 
 
@@ -16,7 +17,7 @@ export default function HeaderPage() {
               <Link to="/Main" className='navbar-link'>𝓘𝓷𝓲𝓬𝓲𝓸</Link>
             </li>
             <li className="navbar-item">
-              <select name="tipos" id="tiposRo" onChange={handleSelectChange}>
+              <select name="tipos" id="tiposRo" >
                 <option value="">𝓢𝓮𝓻𝓿𝓲𝓬𝓲𝓸𝓼</option>
                 <option value="vestidos">Vestidos</option>
                 <option value="camisas">Camisas</option>
@@ -32,7 +33,7 @@ export default function HeaderPage() {
             </li>
           </ul>
           <div className="input-container">
-            <input onChange={botonBuscar} value={busqueda} type="text" name="text" className="input" placeholder="search..." />
+            <input  type="text" name="text" className="input" placeholder="search..." />
             <span className="icon">
               <svg width="19px" height="19px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path opacity="1" d="M14 5H20" stroke="#000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path opacity="1" d="M14 8H17" stroke="#000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M21 11.5C21 16.75 16.75 21 11.5 21C6.25 21 2 16.75 2 11.5C2 6.25 6.25 2 11.5 2" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"></path> <path opacity="1" d="M22 22L20 20" stroke="#000" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
             </span>
