@@ -1,5 +1,6 @@
 import React from 'react'
 import '../styles/FooterPage.css'
+import { Link } from "react-router-dom";
 
 
 
@@ -24,7 +25,7 @@ export default function FooterPage() {
         <div className="footer-column">
           <h3 className="footer-title">Síguenos</h3>
             <div>
-                <button onClick={cerrarSesion} className="btn">Cerrar Sesión</button>
+                <button  className="btn">Cerrar Sesión</button>
             </div>
           <div className="footer-links">
             <a href="https://www.facebook.com/profile.php?id=100066620144069&mibextid=ZbWKwL" className="footer-link">Facebook</a>
