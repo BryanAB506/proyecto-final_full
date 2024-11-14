@@ -1,3 +1,89 @@
 .footer{
     margin-top: 300px;
 }
+
+.carousel-item img {
+    height: 500px;
+    object-fit: cover;
+}
+
+.carousel {
+    height: 500px;
+}
+
+.destacados{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.contSobresalir{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.web{
+    border-radius: 70px;
+    justify-content: center;
+    align-items: center;
+    margin: 50px;
+}
+.NWeb{
+    justify-content: center;
+    align-items: center;
+    margin: 50px;
+}
+
+/* expectation */
+.contExp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .cardis {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-right: 40px;
+  }
+  .group2{
+    margin-top: 40px;
+  }
+  .cardi {
+    background: #fff;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 200px;
+    height: auto;
+  }
+  .ball{
+    background-color: black;
+    border-radius: 50%;
+    position: fixed;
+  }
+  .icone {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .text-expect {
+    max-width: 300px;
+  }
+  
+  .text-expect h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .text-expect p {
+    font-size: 14px;
+    color: #666;
+  }
+  
