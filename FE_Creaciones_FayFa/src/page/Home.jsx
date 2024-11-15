@@ -14,7 +14,7 @@ function Home() {
             <div><DarkVariantExample /></div><br /><br />
             <div className="contPrincipal">
                 
-                <div className="destacados"><h1>Productos Destacados</h1><br /><br />
+                <div className="destacados"><h1>Algunas de nuestras creaciones</h1><br /><br />
                     <Dest /></div><br /><br /><br />
                 <NewWeb /><br /><br /><br />
                 <Expect />
