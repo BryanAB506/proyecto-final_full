@@ -4,7 +4,7 @@ import Row from 'react-bootstrap/Row';
 
 function Dest() {
   return (
-    <Row xs={2} md={3} className="g-1">
+    <Row xs={2} md={3} id='cartas'>
       {Array.from({ length: 6 }).map((_, idx) => (
         <Col key={idx} className="d-flex justify-content-center">
           <Card style={{ width: '21rem', height: 'auto' }}>
