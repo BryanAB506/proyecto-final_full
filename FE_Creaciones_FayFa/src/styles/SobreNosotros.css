@@ -1,5 +1,10 @@
 .headerSN{
     background-color: black;
-    border: #fff 5px;
-    
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    border: 7px solid #D4AF37;
+    font-size: 48px;
   }
