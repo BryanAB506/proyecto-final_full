@@ -90,12 +90,12 @@ WSGI_APPLICATION = 'BE_Creaciones_FayFa.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'creaciones_fayfa',
-        'USER': 'brayan',  # Tu usuario de MySQL
-        'PASSWORD': 'B10102018A',  # La contraseña de tu usuario MySQL
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'creaciones_fayfa',  # El nombre de tu base de datos en MySQL
+        'USER': 'freddy',  # Tu usuario de MySQL
+        'PASSWORD': 'fredroot_30FWD',  # La contraseña de tu usuario MySQL
         'HOST': '127.0.0.1',  # Si estás ejecutando MySQL localmente
-        'PORT': '3306', # El puerto por defecto de MySQL
+        'PORT': '3306',  # El puerto por defecto de MySQL
     }
 }
 
