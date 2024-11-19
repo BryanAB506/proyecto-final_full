@@ -8,3 +8,26 @@
     border: 7px solid #D4AF37;
     font-size: 48px;
   }
+
+.mapaCont{
+  width: 50%;
+  margin-top: 40px;
+  padding: 25px;
+  font-size: 20px;
+}
+.imgsSobreN{
+  text-align: center;
+  width: 50%;
+  margin-top: 40px;
+  padding: 25px;
+  font-size: 19px;
+  justify-content: center;
+}
+.imgsSobreN h1{
+  font-size: 29px;
+  font-weight: 700;
+}
+.map{
+  display: flex;
+  flex-direction: row;
+}
