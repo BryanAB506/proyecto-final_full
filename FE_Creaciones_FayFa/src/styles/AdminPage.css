@@ -1,0 +1,13 @@
+.linea{
+    width: 100%;
+    height: 2px;
+    background-color: black;
+    background: linear-gradient(to right, transparent, black, transparent);
+    margin: 20px 0;
+}
+.tituloOurTeam {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+  }

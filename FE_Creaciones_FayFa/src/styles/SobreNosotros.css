@@ -1,33 +1,145 @@
-.headerSN{
-    background-color: black;
-    height: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    border: 7px solid #D4AF37;
-    font-size: 48px;
-  }
-
-.mapaCont{
-  width: 50%;
-  margin-top: 40px;
-  padding: 25px;
-  font-size: 20px;
+/* ----------------Header------------ */
+.headerSN {
+  background-color: black;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  border: 7px solid #D4AF37;
+  font-size: 48px;
 }
-.imgsSobreN{
+.headerSN h2{
+  font-size: 50px;
+}
+
+/* --------------Mapa-------------- */
+.mapaCont {
   text-align: center;
-  width: 50%;
+  padding: 20px;
+  max-width: 50%;
+  margin: auto;
+}
+
+.mapaTexto {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  padding: 0 10px; /* Espaciado para dispositivos pequeños */
+}
+
+.mapaTitulo h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.mapaIframeCont {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mapaIframe {
+  width: 100%; /* Responsivo para pantallas pequeñas */
+  max-width: 700px; /* Máximo ancho en pantallas grandes */
+  height: 300px; /* Altura más pequeña para pantallas pequeñas */
+  border: 0;
+}
+
+@media (min-width: 768px) {
+  .mapaIframe {
+    height: 450px; /* Mayor altura para pantallas medianas o grandes */
+  }
+}
+
+@media (min-width: 1024px) {
+  .mapaTexto {
+    font-size: 20px;
+  }
+  .mapaIframe {
+    height: 500px; /* Altura ajustada para pantallas grandes */
+  }
+}
+@media (max-width: 1024px) {
+  .mapaCont {
+    max-width: 100%;
+    padding: 10px; /* Opcional: ajusta el padding para pantallas más pequeñas */
+  }
+}
+
+/* -----------------imagenes y texto------------------*/
+.imgsSobreN {
+  text-align: center;
+  width: 100%;
   margin-top: 40px;
   padding: 25px;
   font-size: 19px;
   justify-content: center;
 }
-.imgsSobreN h1{
+
+.imgsSobreN h1 {
   font-size: 29px;
   font-weight: 700;
 }
-.map{
+
+.map {
   display: flex;
   flex-direction: row;
+}
+@media (max-width: 1024px) {
+  .map {
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+/* -------------Nuestro Team----------------- */
+.tituloOurTeam {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+.tituloOurTeam h2{
+  font-size: 50px;
+}
+.contEquipo {
+  display: flex;
+  background-color: rgba(175, 175, 175, 0.548);
+}
+
+.imgEquipo {
+  margin: 40px;
+}
+
+.contTextOurTeam {
+  margin: 40px;
+}
+
+.nombreEquipo p{
+  color: rgb(4, 4, 160);
+  font-size: 24px;
+}
+.nombreEquipo h1{
+  font-size: 52px;
+}
+
+.textoNEquipo{
+  font-size: 24px;
+}
+.fundadoraimg{
+  border-radius: 9px;
+}
+
+/* ---------------Nuestros locales------------ */
+.contLocales{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.cartasLocales{
+  width: 80%;
 }
