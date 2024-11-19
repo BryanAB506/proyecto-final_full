@@ -1,28 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class Usuarios(models.Model):
-    Usuarios = models.OneToOneField(User, on_delete=models.CASCADE)
-    
-    def __str__(self):  
-        return f'{self.Usuarios}'
 
-
-
-# class Usuario(models.Model):
-#     nombre_usuario = models.CharField(max_length=100)
-#     apellido_usuario = models.CharField(max_length=100)
-#     email = models.EmailField(unique=True)
-#     telefono = models.CharField(max_length=15)
-#     password = models.CharField(max_length=100)
-#     fecha_registro = models.DateField(auto_now_add=True)
-
-#     def __str__(self):
-#         return f"{self.nombre_usuario} - {self.apellido_usuario} - {self.email} - {self.email} - {self.telefono} - {self.password} - {self.fecha_registro}"
     
 
 class Direcciones_envio(models.Model):
-    Usuarios = models.ForeignKey('Usuarios', on_delete=models.CASCADE)
+    Usuarios = models.ForeignKey(User, on_delete=models.CASCADE)
     direccion = models.CharField(max_length=255)
     ciudad = models.CharField(max_length=100)
     estado = models.CharField(max_length=100)
@@ -68,7 +51,7 @@ class Ordenes(models.Model):
         ('enviado', 'Enviado'),
         ('entregado', 'Entregado')
     ]
-    Usuarios = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
+    Usuarios = models.ForeignKey(User, on_delete=models.CASCADE)
     carrito = models.ForeignKey(CarritoDeCompras, on_delete=models.CASCADE)
     fecha_orden = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=10, choices=ESTADO_Orden)

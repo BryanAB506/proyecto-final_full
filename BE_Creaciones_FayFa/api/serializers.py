@@ -1,23 +1,23 @@
 from rest_framework import serializers
-from .models import Usuarios, Direcciones_envio, Categorias, Productos, CarritoDeCompras, Ordenes, Pagos
+from .models import Direcciones_envio, Categorias, Productos, CarritoDeCompras, Ordenes, Pagos
 from django.contrib.auth.models import User
 
 
-class UsuariosSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Usuarios
-        fields = '__all__'
+# class UsuariosSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Usuarios
+#         fields = '__all__'
               
-    def validate_Nombre_Usuario (self, value):
-        if Usuarios.objects.filter(username =value).exists():
-            raise serializers.ValidationError("Ya existe un usuario con este nombre.")
-        return value
+#     def validate_Nombre_Usuario (self, value):
+#         if Usuarios.objects.filter(username =value).exists():
+#             raise serializers.ValidationError("Ya existe un usuario con este nombre.")
+#         return value
         
                       
-    def validate_correo (self, value):
-        if Usuarios.objects.filter(email =value).exists():
-            raise serializers.ValidationError("Ya existe un correo con este nombre.")
-        return value
+#     def validate_correo (self, value):
+#         if Usuarios.objects.filter(email =value).exists():
+#             raise serializers.ValidationError("Ya existe un correo con este nombre.")
+#         return value
      
      
 class Direcciones_envioSerializer(serializers.ModelSerializer):
@@ -52,8 +52,9 @@ class PagosSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class RegistroSerializer(serializers.ModelSerializer):
+    
     is_staff = serializers.ChoiceField(choices=[0, 1])
-   
+
     class Meta:
         model = User
         fields = ( "first_name", "last_name", "email", "username",  "password", "is_staff")
