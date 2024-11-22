@@ -3,21 +3,21 @@ from .models import Direcciones_envio, Categorias, Productos, CarritoDeCompras, 
 from django.contrib.auth.models import User
 
 
-# class UsuariosSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Usuarios
-#         fields = '__all__'
-              
-#     def validate_Nombre_Usuario (self, value):
-#         if Usuarios.objects.filter(username =value).exists():
-#             raise serializers.ValidationError("Ya existe un usuario con este nombre.")
-#         return value
+
+
+#validacione para el usuario         
+def validate_Nombre_Usuario (self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Ya existe un usuario con este nombre.")
+        return value
         
                       
-#     def validate_correo (self, value):
-#         if Usuarios.objects.filter(email =value).exists():
-#             raise serializers.ValidationError("Ya existe un correo con este nombre.")
-#         return value
+def validate_email (self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Ya existe un correo registrado con este email.")
+        return value
+
+
      
      
 class Direcciones_envioSerializer(serializers.ModelSerializer):
@@ -52,23 +52,16 @@ class PagosSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class RegistroSerializer(serializers.ModelSerializer):
-    
-    is_staff = serializers.ChoiceField(choices=[0, 1])
-
     class Meta:
         model = User
-        fields = ( "first_name", "last_name", "email", "username",  "password", "is_staff")
+        fields = ( "first_name", "last_name", "email", "username",  "password", 'is_staff')
 
     def create(self, validated_data):
         # Extraer is_staff del validated_data
         is_staff = validated_data.get('is_staff', 0)  # Valor por defecto 0 
-
         usuario = User(**validated_data)
-        usuario.set_password(validated_data['password']) 
-
-        # Asignar el valor correcto a is_staff
-        usuario.is_staff = is_staff == 1  # Admin
+        usuario.set_password(validated_data['password'])
+        usuario.is_staff = bool(is_staff)
         usuario.save()  
-        
 
         return usuario
