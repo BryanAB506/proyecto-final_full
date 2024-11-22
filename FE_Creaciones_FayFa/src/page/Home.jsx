@@ -1,5 +1,5 @@
 import React from "react";
-import HeaderPage from "../components/HeaderPage";
+import CustomNavbar from '../components/Navbar'
 import FooterPage from '../components/FooterPage'
 import DarkVariantExample from "../components/CarruselPrincipal";
 import Dest from "../components/Destacados";
@@ -10,7 +10,7 @@ import Expect from "../components/expectation";
 function Home() {
     return (
         <div>
-            <HeaderPage />
+            <CustomNavbar />
             <div><DarkVariantExample /></div><br /><br />
             <div className="contPrincipal">
                 

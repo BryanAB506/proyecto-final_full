@@ -3,6 +3,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 700px;
+    background-color: #6B7280;
 }
 
 .formLog {
