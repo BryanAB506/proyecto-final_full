@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import '../styles/FormLogin.css';
 import postLogin from '../services/PostLogin';
+import getAdmin from '../services/GetAdmin';
 import Swal from 'sweetalert2'
 import { Link } from "react-router-dom";
 
@@ -23,21 +24,42 @@ export default function FormLogin() {
   
   const iniciar_sesion = async (e) => {
     e.preventDefault();
+
     try {
+      // Autenticar al usuario con username y password
       const Respuesta = await postLogin(username, password)
 
-      if (Respuesta.access) { // Verifica si se recibió un token de acceso
+      // Verificar si las credenciales son correctas
+      if (Respuesta.access) {
         Swal.fire('Login exitoso', 'Bienvenido!');
-        navigate('/home');
-
-      } else {
         
-      }
+        // Obtener información del usuario autenticado
+        const response = await getAdmin();
+
+
+        // Verificar si el usuario es staff desde la respuesta de "response" para saber si es true o false
+        const users = response.filter(users => users.username == username)
+        console.log("Este es el resultado del filter",users);
+        
+
+        if (users[0].is_staff == true) {
+          navigate('/admin')
+        }
+
+        if (users[0].is_staff == false) {
+          navigate('/home')
+        }
+
+
+    } else {
+      throw new Error('Credenciales inválidas');
+    }
+       
       
 
     } catch (error) {
       Swal.fire('Error', 'Credenciales incorrectas', 'error');
-      console.error('error al registrarse', error);     
+      console.error('error al inicio de secion', error);     
     }
   }
 
