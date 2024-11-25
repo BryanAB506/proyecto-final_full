@@ -12,7 +12,6 @@ import AdminP from '../page/Admin';
 import LoginP from '../page/LoginPrueba';
 import AdmPedidos from '../page/AdminPedidos';
 import CarritoComprasP from '../page/CarritoPage';
-import AdminP from '../page/Admin';
 import RegAdmin from '../page/RegAdmin'
 
 export default function Routing() {
