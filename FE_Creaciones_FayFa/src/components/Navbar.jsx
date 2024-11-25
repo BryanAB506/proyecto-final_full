@@ -45,7 +45,7 @@ function CustomNavbar() {
               <i className="bi bi-person-circle" style={{ marginRight: "8px", fontSize: "1.5rem" }}></i>
               Perfil
             </Nav.Link>
-            <Nav.Link href="#carrito" className="d-flex align-items-center">
+            <Nav.Link href="/carritodecompras" className="d-flex align-items-center">
               <i className="bi bi-cart" style={{ marginRight: "8px", fontSize: "1.5rem" }}></i>
               Carrito
             </Nav.Link>

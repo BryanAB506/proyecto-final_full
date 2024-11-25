@@ -11,12 +11,12 @@ function SobreNosotrosPage() {
   return (
     <div>
       <CustomNavbar/>
-      <SobreNosotros/>
+      <SobreNosotros/><br />
       <div className='map'>
-      <Mapa/>
-      <ImgsSN/>
-      </div>
-      <OurTeam/>
+      <Mapa/><br />
+      <ImgsSN/><br />
+      </div><br /><br />
+      <OurTeam/><br />
       <Locales/> 
       <FooterPage/>
     </div>

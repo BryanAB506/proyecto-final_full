@@ -1,8 +1,18 @@
 import React from "react";
 import "../styles/AdminPage.css";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { useAuth } from "../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function FormAdminC() {
+
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout(); // Simula cerrar sesión
+        navigate('/loginprueba'); // Redirige a Home
+      };
     return (
         <div>
             <Container className="d-flex flex-column align-items-center">
@@ -18,6 +28,7 @@ export default function FormAdminC() {
                             borderColor: "#FF5733",
                             margin: "10px",
                         }}
+                        onClick={() => navigate("/pedidosadmin")}
                     >
                         Ver pedidos de usuarios
                     </Button>
@@ -30,6 +41,16 @@ export default function FormAdminC() {
                         }}
                     >
                         Ver usuarios
+                    </Button>
+                    <Button
+                        variant="dark"
+                        style={{
+                            backgroundColor: "#212529",
+                            borderColor: "#FF5733",
+                            margin: "10px",
+                        }}
+                        onClick={handleLogout}>
+                        cerrar sesion
                     </Button>
                 </div>
 
