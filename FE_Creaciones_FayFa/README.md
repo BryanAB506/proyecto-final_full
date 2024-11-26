@@ -17,3 +17,6 @@ npm i react-bootstrap bootstrap
 npm install bootstrap-icons
 npm install sweetalert2 
 npm install cors
+
+
+pip install django-cors-headers
