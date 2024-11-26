@@ -1,5 +1,5 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission  
 from django.contrib.auth.models import User
 # from django.db.models import Count
 from .models import Direcciones_envio, Categorias, Productos, CarritoDeCompras, Ordenes, Pagos
@@ -10,11 +10,27 @@ from django.contrib.auth import authenticate, login
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
+
+#permisos para admin
+
+class IsAdminUser(BasePermission):
+    def has_permission(self, request, view):
+        return request.user and request.user.is_staff
+
+
 class RegistroView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegistroSerializer
     permission_classes = [AllowAny]
 
+
+class RegistroDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegistroSerializer
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+     return Response ({"message": "solo los administradores utilizan esta vita "})
 
     
 # Direcciones_envio
