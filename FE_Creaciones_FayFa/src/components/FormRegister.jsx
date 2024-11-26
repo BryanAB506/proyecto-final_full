@@ -48,7 +48,7 @@ export default function FormLogin() {
       Swal.fire("Se ha registrado exitosamente!");
       
 
-      navigate("/login");// redirige al login
+      navigate("/");// redirige al login
     } catch (error) {
       // Maneja errores específicos
       if (error.message.includes("username")) {

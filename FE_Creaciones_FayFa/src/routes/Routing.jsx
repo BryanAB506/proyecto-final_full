@@ -9,7 +9,6 @@ import Login from '../page/Login';
 import Register from '../page/Register';
 import Products from '../page/ProductosP';
 import AdminP from '../page/Admin';
-import LoginP from '../page/LoginPrueba';
 import AdmPedidos from '../page/AdminPedidos';
 import CarritoComprasP from '../page/CarritoPage';
 import RegAdmin from '../page/RegAdmin'
@@ -22,11 +21,10 @@ export default function Routing() {
           <Route path="/Home" element={<Home />} />
           <Route path="/Contact" element={<Contact />} />
           <Route path='/sobrenosotros' element={<SobreNosotrosPage />} />
-          <Route path='/login' element={<Login />} />
+          <Route path='/' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/productos' element={<Products />} />
           <Route path='/admin' element={<PrivateRoute><AdminP /></PrivateRoute>} />
-          <Route path='/loginprueba' element={<LoginP />} />
           <Route path='/pedidosadmin' element={<AdmPedidos />} />
           <Route path='/carritodecompras' element={<CarritoComprasP />} />
           <Route path='/admin' element={<AdminP />} />
