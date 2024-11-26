@@ -83,8 +83,13 @@ export default function FormAdminC() {
                             <Form.Control type="file" />
                         </Form.Group>
                         <div className="text-center">
-                            <Button variant="success" type="submit">
-                                Agregar
+                            <Button variant="success" type="submit"
+                            style={{
+                                backgroundColor: "#212529",
+                                borderColor: "#FF5733",
+                                margin: "10px",
+                            }}>
+                                Agregar nuevo producto
                             </Button>
                         </div>
                     </Form>
