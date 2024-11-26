@@ -21,29 +21,14 @@ function Productos() {
                                     <option value="Unisex">Unisex</option>
                                 </Form.Select>
                             </Form.Group>
-                            <Form.Group className="mt-3">
-                                <Form.Label>Colección</Form.Label>
-                                <Form.Check
-                                    type="radio"
-                                    label="Casual"
-                                    name="collection"
-                                    value="Casual"
-                                    defaultChecked
-                                />
-                                <Form.Check
-                                    type="radio"
-                                    label="Básquetbol"
-                                    name="collection"
-                                    value="Básquetbol"
-                                />
-                            </Form.Group>
+                          
                         </Form>
                     </Col>
 
                     {/* Main content */}
                     <Col md={9}>
                         <Row>
-
+                            
                             <Col md={4} className="mb-4">
                                 <Card>
                                     <Card.Img variant="top" src="src\assets\img\local.jpg" />
