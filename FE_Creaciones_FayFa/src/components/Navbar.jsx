@@ -1,7 +1,7 @@
 import React from "react";
-import { Navbar, Nav, Container } from "react-bootstrap";
+import { Navbar, Nav, Container, Dropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 function CustomNavbar() {
   return (
@@ -10,7 +10,7 @@ function CustomNavbar() {
         {/* Logo y Nombre de la Empresa */}
         <Navbar.Brand href="#" className="d-flex align-items-center">
           <img
-            src="src\assets\img\logoS.jpg" // Reemplaza con la URL de tu logo
+            src="src\\assets\\img\\logoS.jpg" // Reemplaza con la URL de tu logo
             alt="Logo"
             className="rounded-circle"
             style={{ width: "80px", height: "80px", marginRight: "10px" }}
@@ -39,15 +39,60 @@ function CustomNavbar() {
             </Nav.Link>
           </Nav>
 
-          {/* Perfil y carrito de compras con íconos */}
-          <Nav style={{ fontSize: "1.2rem" }}>
-            <Nav.Link href="#perfil" className="d-flex align-items-center">
-              <i className="bi bi-person-circle" style={{ marginRight: "8px", fontSize: "1.5rem" }}></i>
-              Perfil
-            </Nav.Link>
+          {/* Perfil, carrito de compras y registro */}
+          <Nav style={{ fontSize: "1.2rem" }} className="align-items-center">
+            <Dropdown align="end">
+              <Dropdown.Toggle
+                id="dropdown-basic"
+                as="div" // Evita que sea un botón, lo convierte en un div
+                style={{ 
+                  display: "flex", 
+                  alignItems: "center", 
+                  cursor: "pointer", 
+                  color: "white" 
+                }}
+              >
+                <i
+                  className="bi bi-person-circle"
+                  style={{ marginRight: "8px", fontSize: "1.5rem", color: "gray" }}
+                ></i>
+                <span style={{ marginRight: "8px", color: "gray" }}>Perfil</span>
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {/* Información del usuario */}
+                <Dropdown.Header className="text-center">
+                  <div style={{ fontWeight: "bold" }}>Nombre del Usuario</div>
+                  <div style={{ fontSize: "0.85rem" }}>
+                    usuario@email.com
+                  </div>
+                </Dropdown.Header>
+                <Dropdown.Divider />
+                {/* Accesos directos */}
+                <Dropdown.Item href="/pedidos">Pedidos</Dropdown.Item>
+                <Dropdown.Item href="/carritodecompras">
+                  Carrito de Compras
+                </Dropdown.Item>
+                <Dropdown.Item href="/logout" className="text-danger">
+                  Logout
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+
             <Nav.Link href="/carritodecompras" className="d-flex align-items-center">
-              <i className="bi bi-cart" style={{ marginRight: "8px", fontSize: "1.5rem" }}></i>
+              <i
+                className="bi bi-cart"
+                style={{ marginRight: "8px", fontSize: "1.5rem" }}
+              ></i>
               Carrito
+            </Nav.Link>
+
+            <Nav.Link href="/register" className="d-flex align-items-center">
+              <i
+                className="bi bi-pencil-square"
+                style={{ marginRight: "8px", fontSize: "1.5rem" }}
+              ></i>
+              Registro
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>
