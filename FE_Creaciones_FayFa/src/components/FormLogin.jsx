@@ -5,11 +5,13 @@ import postLogin from '../services/PostLogin';
 import getAdmin from '../services/GetAdmin';
 import Swal from 'sweetalert2'
 import { Link } from "react-router-dom";
+import { useAuth } from '../Context/AuthContext';
 
 export default function FormLogin() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate ();
+  const { login } = useAuth();
 
   
   const cargaUsername = (e) => {
@@ -43,6 +45,7 @@ export default function FormLogin() {
         
 
         if (users[0].is_staff == true) {
+          login()
           navigate('/admin')
         }
 
