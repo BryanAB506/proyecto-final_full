@@ -12,7 +12,7 @@ async function getAdmin() {
         }
 
         const admin = await response.json();
-        console.log('Respuesta del servidor:', admin);
+
 
 
 
