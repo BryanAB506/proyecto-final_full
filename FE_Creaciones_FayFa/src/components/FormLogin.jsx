@@ -41,7 +41,7 @@ export default function FormLogin() {
 
         // Verificar si el usuario es staff desde la respuesta de "response" para saber si es true o false
         const users = response.filter(users => users.username == username)
-        console.log("Este es el resultado del filter",users);
+     
         
 
         if (users[0].is_staff == true) {

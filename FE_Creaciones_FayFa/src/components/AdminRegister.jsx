@@ -141,7 +141,7 @@ export default function AdminRegister() {
             required
           />
           <label>Staff status (¿Es usuario staff?)</label>
-      </div>
+        </div>
 
         <button type="submit" className="submit">Sign in</button>
 

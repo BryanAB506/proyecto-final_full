@@ -1,6 +1,22 @@
+import { useState } from 'react'
 import { Container, Row, Col, Card, Form } from "react-bootstrap";
 import '../styles/Productos.css'
+import getCategorias from '../services/GetCategorias';
+
+
 function Productos() {
+
+    const [nombre_categoria, setNombre_categoria] = useState([])
+    const [descripcion, setdescripcion] = useState([])
+
+    async function dotosCategory() {
+        const datos = await getCategorias()
+        setNombre_categoria(datos)
+        setdescripcion(datos)
+        
+        
+    }
+
     return (
         <div >
             <div className='tituloOurTeam'>
@@ -12,6 +28,7 @@ function Productos() {
                     <Col md={3} className="bg-light p-3">
                         <h5>Filtros</h5>
                         <Form>
+
                             <Form.Group>
                                 <Form.Label>Género</Form.Label>
                                 <Form.Select name="gender">
