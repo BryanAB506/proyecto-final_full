@@ -3,7 +3,7 @@ async function postProductos(data) {
      
     
   
-        const response = await fetch("http://localhost:3001/articulos", {
+        const response = await fetch("http://127.0.0.1:8000/api/productos/", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

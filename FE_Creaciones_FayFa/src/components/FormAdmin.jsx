@@ -1,10 +1,11 @@
-import React  from "react";
+import React from "react";
 import "../styles/AdminPage.css";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { useAuth } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import PostCategorias from '../services/PostCategorias'
+import { useState, useEffect } from "react";
+import PostCategorias from '../services/PostCategorias';
+import getCategorias from "../services/GetCategorias";
 
 export default function FormAdminC() {
   const { logout } = useAuth();
@@ -19,31 +20,57 @@ export default function FormAdminC() {
   const [nombre_categoria, setnombre_categoria] = useState('')
   const [descripcion, setdescripcion] = useState('')
 
+
+  const [categorias, setCategorias] = useState([]);
+  const [selectedCategoria, setSelectedCategoria] = useState("");
+
+  const handleCategoriaChange = (e) => {
+    setSelectedCategoria(e.target.value);
+  };
+
   const cargarCategorias = (e) => {
-      setnombre_categoria(e.target.value);
+    setnombre_categoria(e.target.value);
   }
 
   const cargarDescripcion = (e) => {
-      setdescripcion(e.target.value);
+    setdescripcion(e.target.value);
   }
 
   const cargarCategory = async (e) => {
-      e.preventDefault();
+    e.preventDefault();
 
-      try {
-          await PostCategorias(nombre_categoria, descripcion)
-          Swal.fire("Se ha ingresado las categorias!");
+    try {
+      await PostCategorias(nombre_categoria, descripcion)
+      Swal.fire("Se ha ingresado las categorias!");
+      obtenerCategoria();// refresca 
 
-      } catch (error) {
-          console.log(error);
-          
-      }
+    } catch (error) {
+      console.log(error);
 
     }
 
+  }
+
+  const obtenerCategoria = async () => {
+    try {
+      const categoriasF = await getCategorias();
+      setCategorias(categoriasF)//actuaciza el estado
+    } catch (error) {
+      console.error({message: error})
+    }
+  }
+
+  useEffect(() => {
+    obtenerCategoria();
+  }, []);
 
 
-  
+  const agregarProducto = (e) => {
+    e.preventDefault();
+    Swal.fire(`Producto agregado a la categoría ${selectedCategoria}`);
+  };
+
+
 
   return (
     <div>
@@ -132,27 +159,32 @@ export default function FormAdminC() {
           <h4 className="text-center">Agregar producto</h4>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Texto</Form.Label>
+              <Form.Label>nombre</Form.Label>
               <Form.Control type="text" placeholder="Ingrese texto" />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Texto</Form.Label>
+              <Form.Label>descripcion_producto</Form.Label>
               <Form.Control type="text" placeholder="Ingrese texto" />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Texto</Form.Label>
+              <Form.Label>precio</Form.Label>
               <Form.Control type="text" placeholder="Ingrese texto" />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Texto</Form.Label>
+              <Form.Label>stock</Form.Label>
               <Form.Control type="text" placeholder="Ingrese texto" />
             </Form.Group>
+            <Form.Label>categorias</Form.Label>
+            <Form.Select value={selectedCategoria} onChange={handleCategoriaChange}>
+              <option value="">Selecciona una categoría</option>
+              {categorias.map((categoria) => (
+                <option key={categoria.id} value={categoria.id}>
+                  {categoria.nombre_categoria}
+                </option>
+              ))}
+            </Form.Select>
             <Form.Group className="mb-3">
-              <Form.Label>Descripción</Form.Label>
-              <Form.Control as="textarea" rows={3} placeholder="Ingrese descripción" />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Seleccione una imagen</Form.Label>
+              <Form.Label>imagen de productos</Form.Label>
               <Form.Control type="file" />
             </Form.Group>
             <div className="text-center">
