@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Row, Col, Table } from "react-bootstrap";
+import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import '../styles/PaymentPage.css'
 
 const PaymentPage = ({ orderData }) => {
     const [formState, setFormState] = useState({
@@ -32,40 +33,79 @@ const PaymentPage = ({ orderData }) => {
     };
 
     const handleProofUpload = (file) => {
+        if (!file) {
+            alert("Por favor, seleccione un archivo.");
+            return;
+        }
+
+        const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
+        if (!allowedTypes.includes(file.type)) {
+            alert("Tipo de archivo no permitido. Solo se aceptan JPG, PNG o PDF.");
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert("El archivo excede el tamaño máximo de 5 MB.");
+            return;
+        }
+
         setFormState((prevState) => ({
             ...prevState,
             paymentProof: file,
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append("deliveryMethod", formState.deliveryMethod);
-        formData.append("paymentMethod", formState.paymentMethod);
-
-        if (formState.paymentProof) {
-            formData.append("paymentProof", formState.paymentProof);
+        // Validaciones
+        if (formState.deliveryMethod === "delivery") {
+            const { direccion, ciudad, estado, codigoPostal } = formState.addressDetails;
+            if (!direccion || !ciudad || !estado || !codigoPostal) {
+                alert("Por favor, complete todos los campos de dirección.");
+                return;
+            }
         }
 
-        Object.keys(formState.addressDetails).forEach((key) => {
-            formData.append(key, formState.addressDetails[key]);
-        });
+        if ((formState.paymentMethod === "sinpe" || formState.paymentMethod === "transfer") && !formState.paymentProof) {
+            alert("Por favor, suba un comprobante de pago.");
+            return;
+        }
 
-        console.log("Datos enviados:", formState);
-        alert("Compra completada con éxito!");
+        try {
+            const formData = new FormData();
+            formData.append("deliveryMethod", formState.deliveryMethod);
+            formData.append("paymentMethod", formState.paymentMethod);
+
+            if (formState.paymentProof) {
+                formData.append("paymentProof", formState.paymentProof);
+            }
+
+            Object.keys(formState.addressDetails).forEach((key) => {
+                formData.append(key, formState.addressDetails[key]);
+            });
+
+            // Simulación de envío (reemplazar con URL real del backend)
+            const response = await fetch("/api/upload-comprobante", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error("Error al completar la compra.");
+            }
+
+            const data = await response.json();
+            console.log("Datos enviados correctamente:", data);
+            alert("Compra completada con éxito!");
+        } catch (error) {
+            console.error("Error en el envío:", error);
+            alert("Hubo un problema al procesar la compra. Por favor, inténtelo de nuevo.");
+        }
     };
 
     return (
-        <Container style={{
-            maxWidth: "900px", // Reduce el ancho máximo del container
-            margin: "20px auto", // Centra horizontalmente
-            padding: "20px",  // Añade espacio interno
-            backgroundColor: "#f8f9fa", // Fondo opcional para contraste
-            borderRadius: "10px", // Bordes redondeados opcionales
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" // Sombra para dar profundidad
-        }}>
+        <Container className="payment-container">
             <h2 className="my-4">Página de Pago</h2>
 
             {/* Resumen de la Orden */}
@@ -88,7 +128,7 @@ const PaymentPage = ({ orderData }) => {
                 </div>
             </div>
 
-            {/* Paso 1: Método de Envío */}
+            {/* Formulario */}
             <Form onSubmit={handleSubmit}>
                 <h4>Paso 1: Método de Envío</h4>
                 <Form.Check
@@ -116,12 +156,9 @@ const PaymentPage = ({ orderData }) => {
                             <Form.Label>Dirección</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="direccion"
                                 value={formState.addressDetails.direccion}
                                 placeholder="Ingrese su dirección"
-                                onChange={(e) =>
-                                    handleAddressChange("direccion", e.target.value)
-                                }
+                                onChange={(e) => handleAddressChange("direccion", e.target.value)}
                             />
                         </Form.Group>
                         <Row>
@@ -130,12 +167,9 @@ const PaymentPage = ({ orderData }) => {
                                     <Form.Label>Ciudad</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        name="ciudad"
                                         value={formState.addressDetails.ciudad}
                                         placeholder="Ingrese su ciudad"
-                                        onChange={(e) =>
-                                            handleAddressChange("ciudad", e.target.value)
-                                        }
+                                        onChange={(e) => handleAddressChange("ciudad", e.target.value)}
                                     />
                                 </Form.Group>
                             </Col>
@@ -144,12 +178,9 @@ const PaymentPage = ({ orderData }) => {
                                     <Form.Label>Estado</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        name="estado"
                                         value={formState.addressDetails.estado}
                                         placeholder="Ingrese su estado"
-                                        onChange={(e) =>
-                                            handleAddressChange("estado", e.target.value)
-                                        }
+                                        onChange={(e) => handleAddressChange("estado", e.target.value)}
                                     />
                                 </Form.Group>
                             </Col>
@@ -158,12 +189,9 @@ const PaymentPage = ({ orderData }) => {
                                     <Form.Label>Código Postal</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        name="codigoPostal"
                                         value={formState.addressDetails.codigoPostal}
                                         placeholder="Ingrese su código postal"
-                                        onChange={(e) =>
-                                            handleAddressChange("codigoPostal", e.target.value)
-                                        }
+                                        onChange={(e) => handleAddressChange("codigoPostal", e.target.value)}
                                     />
                                 </Form.Group>
                             </Col>
@@ -171,7 +199,6 @@ const PaymentPage = ({ orderData }) => {
                     </div>
                 )}
 
-                {/* Paso 2: Método de Pago */}
                 <h4 className="mt-4">Paso 2: Método de Pago</h4>
                 <Form.Check
                     type="radio"
@@ -213,16 +240,11 @@ const PaymentPage = ({ orderData }) => {
                         </div>
                     )}
 
-                {/* Botón de completar compra */}
                 <Button
                     type="submit"
                     variant="primary"
                     className="mt-4"
-                    style={{
-                        backgroundColor: "#212529",
-                        borderColor: "#FF5733",
-                        margin: "10px",
-                    }}
+                    style={{ backgroundColor: "#212529", borderColor: "#FF5733", margin: "10px" }}
                 >
                     Completar Compra
                 </Button>
