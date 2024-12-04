@@ -13,6 +13,7 @@ import AdmPedidos from '../page/AdminPedidos';
 import CarritoComprasP from '../page/CarritoPage';
 import RegAdmin from '../page/RegAdmin'
 import PaymentPage from '../page/Pagos';
+import UserP from '../page/Users';
 
 export default function Routing() {
   return (
@@ -31,6 +32,7 @@ export default function Routing() {
           <Route path='/admin' element={<AdminP />} />
           <Route path='/RegistroAdmin' element={<RegAdmin />} />
           <Route path='/pago' element={<PaymentPage />} />
+          <Route path='/usuarios' element={<UserP />} />
         </Routes>
       </Router>
     </AuthProvider>
