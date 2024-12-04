@@ -16,12 +16,26 @@ function Productos() {
         
         
     }
+    // const handleSearchChange = (event) => {
+    //     setSearchTerm(event.target.value);
+    // };
 
+    // const filteredCategorias = nombre_categoria.filter((categoria) =>
+    //     categoria.toLowerCase().includes(searchTerm.toLowerCase())
+    // );
     return (
         <div >
             <div className='tituloOurTeam'>
                 <h2>PRODUCTOS</h2>
             </div><br />
+            <Form className="my-3 w-50 mx-auto">
+                <Form.Control
+                    type="text"
+                    placeholder="Buscar productos..."
+                    value=""
+                    // onChange={handleSearchChange}
+                />
+            </Form>
             <Container fluid>
                 <Row>
                     {/* Sidebar for filters */}
