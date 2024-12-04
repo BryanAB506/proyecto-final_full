@@ -1,9 +1,12 @@
 from django.urls import path
 from . import views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from .views import get_users
 
 urlpatterns = [
 
+    #user
+    path('users/', get_users, name='get_users'),
 
     # Direcciones de envío
     path('Direcciones_envio/', views.Direcciones_envioListCreate.as_view(), name='Direcciones_envio-list'),
@@ -16,6 +19,7 @@ urlpatterns = [
     # Productos
     path('productos/', views.ProductosListCreate.as_view(), name='Productos-list'),
     path('productos/<int:pk>/', views.ProductosDetail.as_view(), name='Productos-detail'),
+    # path('productos/<int:producto_id>/imagen/', views.SubirImagenFirestore.as_view(), name='subir-imagen'),
 
     # Carrito de compras
     path('CarritoDeCompras/', views.CarritoDeComprasListCreate.as_view(), name='CarritoDeCompras-list'),
@@ -34,4 +38,5 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', views.RegistroView.as_view(), name='register'),
     path('login/', views.LoginView.as_view(), name='login'),
+
 ]

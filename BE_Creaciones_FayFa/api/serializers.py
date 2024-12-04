@@ -2,8 +2,12 @@ from rest_framework import serializers
 from .models import Direcciones_envio, Categorias, Productos, CarritoDeCompras, Ordenes, Pagos
 from django.contrib.auth.models import User
 
+from rest_framework import serializers
 
-
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active', 'date_joined']
 
 #validacione para el usuario         
 def validate_Nombre_Usuario (self, value):
@@ -35,7 +39,7 @@ class ProductosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Productos
         fields = '__all__'
-        
+
 class CarritoDeComprasSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarritoDeCompras
