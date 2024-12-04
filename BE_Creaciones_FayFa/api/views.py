@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission  
 from django.contrib.auth.models import User
 # from django.db.models import Count
@@ -8,8 +9,22 @@ from .serializers import Direcciones_envioSerializer, CategoriasSerializer, Prod
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login
 from rest_framework_simplejwt.tokens import RefreshToken
+# from .firebase.firestore import subir_imagen_firestore  # La función creada anteriormente
 
+#user
+from django.contrib.auth.models import User
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import UserSerializer
+from rest_framework.decorators import api_view, permission_classes
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_users(request):
+    users = User.objects.all()
+    serializer = UserSerializer(users, many=True) 
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 #permisos para admin
 
@@ -63,11 +78,14 @@ class ProductosListCreate(generics.ListCreateAPIView):
     queryset = Productos.objects.all()
     serializer_class = ProductosSerializer
     permission_classes = [AllowAny]
+
+    
     
 class ProductosDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Productos.objects.all()
     serializer_class = ProductosSerializer
     permission_classes = [IsAuthenticated] 
+
 
 # CarritoDeCompras
 
@@ -121,3 +139,4 @@ class LoginView(generics.GenericAPIView):
                 'access': str(refresh.access_token),
             })
         return Response({'error': 'Credenciales inválidas'}, status=400)
+    

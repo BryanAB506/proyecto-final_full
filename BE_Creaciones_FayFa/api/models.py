@@ -25,7 +25,7 @@ class Categorias(models.Model):
     
 
 class Productos(models.Model):
-    imagen_product = models.BinaryField(default=0)
+    imagen_product = models.TextField(default="0")
     nombre = models.CharField(max_length=100)
     descripcion_producto = models.TextField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)

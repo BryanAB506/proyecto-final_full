@@ -2,10 +2,14 @@ import React from "react";
 import "../styles/AdminPage.css";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { useAuth } from "../Context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Await, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PostCategorias from '../services/PostCategorias';
 import getCategorias from "../services/GetCategorias";
+import postProductos from "../services/PostProductos";
+import Swal from 'sweetalert2'
+import {UploadFile} from '../firebase/Config'
+
 
 export default function FormAdminC() {
   const { logout } = useAuth();
@@ -69,6 +73,60 @@ export default function FormAdminC() {
     e.preventDefault();
     Swal.fire(`Producto agregado a la categoría ${selectedCategoria}`);
   };
+
+
+
+  const [nombre, setnombre] = useState ('')
+  const [descripcion_producto, setdescripcion_producto] = useState ('')
+  const [precio, setprecio] = useState('')
+  const [stock, setstock] = useState('')
+
+
+  const cargarNombre = (e) => {
+    setnombre(e.target.value);
+  }
+
+  const cargarDescripcion_producto = (e) => {
+    setdescripcion_producto(e.target.value);
+  }
+
+  const cargarPrecio = (e) => {
+    setprecio(e.target.value);
+  }
+
+
+  const cargarStok = (e) => {
+    setstock(e.target.value);
+  }
+
+  const cargarProductos = async (e) => {
+    e.preventDefault();
+    try {
+      await postProductos(nombre, descripcion_producto, precio, stock, selectedCategoria, imagen_product);
+
+        Swal.fire("Producto agregado con éxito.");
+    } catch (error) {
+        console.error("Error al agregar el producto:", error);
+        Swal.fire("Hubo un error al agregar el producto.");
+    }
+};
+
+
+
+
+const [imagen_product, setimagen_product]= useState("")
+   //aplicaas el hooks
+const CargarImagen= async(e)=>{
+      const file = e.target.files[0]
+      setimagen_product(file)
+      if (file) {
+        const resultado= await UploadFile(file);
+        setimagen_product(resultado)
+      }
+
+    } // la funcion cargarImagen
+
+
 
 
 
@@ -157,22 +215,22 @@ export default function FormAdminC() {
         {/* Formulario para agregar producto */}
         <Col md={8}>
           <h4 className="text-center">Agregar producto</h4>
-          <Form>
+          <Form onSubmit={cargarProductos}>
             <Form.Group className="mb-3">
               <Form.Label>nombre</Form.Label>
-              <Form.Control type="text" placeholder="Ingrese texto" />
+              <Form.Control type="text" value={nombre} onChange={cargarNombre} placeholder="Ingrese texto" />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>descripcion_producto</Form.Label>
-              <Form.Control type="text" placeholder="Ingrese texto" />
+              <Form.Control type="text" value={descripcion_producto} onChange={cargarDescripcion_producto} placeholder="Ingrese texto" />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>precio</Form.Label>
-              <Form.Control type="text" placeholder="Ingrese texto" />
+              <Form.Control type="text" value={precio} onChange={cargarPrecio} placeholder="Ingrese texto" />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>stock</Form.Label>
-              <Form.Control type="text" placeholder="Ingrese texto" />
+              <Form.Control type="text" value={stock} onChange={cargarStok} placeholder="Ingrese texto" />
             </Form.Group>
             <Form.Label>categorias</Form.Label>
             <Form.Select value={selectedCategoria} onChange={handleCategoriaChange}>
@@ -185,7 +243,7 @@ export default function FormAdminC() {
             </Form.Select>
             <Form.Group className="mb-3">
               <Form.Label>imagen de productos</Form.Label>
-              <Form.Control type="file" />
+              <Form.Control type="file"  onChange={CargarImagen} />
             </Form.Group>
             <div className="text-center">
               <Button

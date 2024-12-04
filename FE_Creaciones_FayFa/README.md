@@ -20,3 +20,8 @@ npm install cors
 
 
 pip install django-cors-headers
+
+
+
+
+npm i uuid
