@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Card, Button, ListGroup, Form } from "react-bootstrap";
 
 const ShoppingCart = () => {
@@ -53,6 +54,8 @@ const ShoppingCart = () => {
     const calculateSubtotal = () => {
         return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
     };
+
+    const navigate = useNavigate();
 
     return (
         <Container>
@@ -149,7 +152,8 @@ const ShoppingCart = () => {
                                     backgroundColor: "#212529",
                                     borderColor: "#FF5733",
                                     margin: "10px",
-                                }}>
+                                }}
+                                onClick={() => navigate("/pago")}>
                                 Pasar por caja
                             </Button>
                         </Card.Body>
