@@ -169,7 +169,7 @@ const PaymentPage = ({ orderData }) => {
             </div>
 
             {/* Formulario */}
-            <Form onSubmit={cargarEnvio}>
+            <Form onSubmit={carga}>
                 <h4>Paso 1: Método de Envío</h4>
                 <Form.Check
                     type="radio"
