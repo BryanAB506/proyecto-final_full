@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Container, Row, Col, Card, Form } from "react-bootstrap";
+import { Container, Row, Col, Card, Form,Button } from "react-bootstrap";
 import getCategorias from '../services/GetCategorias';
 import { getProductos } from '../services/GetProductos';
 import FayFaContext from "../Context/FayFaContext";
@@ -95,13 +95,21 @@ function Productos() {
                         <Row>
                         {productos.map(producto => (
                             <Col key={producto.id} md={4} className="mb-4">
-                                <Card>
+                                 <Card>
                                     <Card.Img variant="top" src={producto.imagen_product || "src/assets/img/default.jpg"} />
                                     <Card.Body>
                                         <Card.Title>{producto.nombre}</Card.Title>
                                         <Card.Text>
-                                            {producto.descripcion_producto}
-                                        </Card.Text>                                    
+                                            <strong>Estilo:</strong> {producto.descripcion_producto}
+                                        </Card.Text>
+                                        <Card.Text>
+                                            <strong>Precio:</strong> ₡{producto.precio}
+                                        </Card.Text>
+                                        <div className="d-flex justify-content-between">
+                                            <Button variant="primary" size="sm" style={{ backgroundColor: "#212529" }}>
+                                                agregar al carrito
+                                            </Button>
+                                        </div>
                                     </Card.Body>
                                 </Card>
                             </Col>
