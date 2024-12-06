@@ -37,19 +37,30 @@ class Productos(models.Model):
 
 
 class CarritoDeCompras(models.Model):
-    Productos = models.ForeignKey('Productos', on_delete=models.CASCADE)
-    cantidad = models.IntegerField()
-    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    section = models.CharField(max_length=100, default='default_value')  # Identificador para diferentes secciones
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-    
-    def save(self, *args, **kwargs):
-        # Actualizamos el total del carrito cuando se guarda
-        self.total = self.precio_unitario * self.cantidad
-        super().save(*args, **kwargs)
-        
+
     def __str__(self):
-        return f"{self.Productos} - {self.cantidad} - {self.precio_unitario} - {self.total}"
-    
+        return f"Carrito de {self.user.username} - Sección {self.section} - Total: {self.total}"
+
+    def actualizar_total(self):
+        # Actualiza el total del carrito sumando los precios de los ítems
+        self.total = sum(item.total() for item in self.items.all())
+        self.save()
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(CarritoDeCompras, related_name='items', on_delete=models.CASCADE)
+    Productos = models.ForeignKey('Productos', on_delete=models.CASCADE)  # Relación con el modelo Producto
+    quantity = models.PositiveIntegerField(default=1)  # Cantidad del producto
+    price = models.DecimalField(max_digits=10, decimal_places=2)  # Precio del producto
+
+    def __str__(self):
+        return f"{self.quantity} de {self.Productos.nombre} en {self.cart.section}"
+
+    def total(self):
+        # Calcula el total de este ítem
+        return self.price * self.quantity
 
 
 class Ordenes(models.Model):
