@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import '../styles/FormLogin.css';
 import postLogin from '../services/PostLogin';
 import getAdmin from '../services/GetAdmin';
 import Swal from 'sweetalert2'
 import { Link } from "react-router-dom";
-import { useAuth } from '../Context/AuthContext';
+// import { useAuth } from '../Context/AuthContext';
+import FayFaContext from '../Context/FayFaContext';
 
 export default function FormLogin() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate ();
-  const { login } = useAuth();
+  const { login } = useContext(FayFaContext);
 
   
   const cargaUsername = (e) => {

@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import "../styles/AdminPage.css";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { useAuth } from "../Context/AuthContext";
+// import { useAuth } from "../Context/AuthContext";
 import { Await, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PostCategorias from '../services/PostCategorias';
@@ -9,10 +9,12 @@ import getCategorias from "../services/GetCategorias";
 import postProductos from "../services/PostProductos";
 import Swal from 'sweetalert2'
 import {UploadFile} from '../firebase/Config'
+import FayFaContext from "../Context/FayFaContext";
+
 
 
 export default function FormAdminC() {
-  const { logout } = useAuth();
+  const { logout, setNuevoProducto } = useContext(FayFaContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -102,7 +104,8 @@ export default function FormAdminC() {
   const cargarProductos = async (e) => {
     e.preventDefault();
     try {
-      await postProductos(nombre, descripcion_producto, precio, stock, selectedCategoria, imagen_product);
+      const productoAgregado = await postProductos(nombre, descripcion_producto, precio, stock, selectedCategoria, imagen_product);
+      setNuevoProducto(productoAgregado)
 
         Swal.fire("Producto agregado con éxito.");
     } catch (error) {
