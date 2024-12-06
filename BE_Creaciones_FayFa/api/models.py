@@ -41,7 +41,12 @@ class CarritoDeCompras(models.Model):
     cantidad = models.IntegerField()
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-
+    
+    def save(self, *args, **kwargs):
+        # Actualizamos el total del carrito cuando se guarda
+        self.total = self.precio_unitario * self.cantidad
+        super().save(*args, **kwargs)
+        
     def __str__(self):
         return f"{self.Productos} - {self.cantidad} - {self.precio_unitario} - {self.total}"
     

@@ -2,9 +2,15 @@ from django.urls import path
 from . import views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import get_users
+from .views import add_to_cart, view_cart, update_cart, remove_from_cart
 
 urlpatterns = [
-
+    #vistas de carrito
+    path("add-to-cart/<int:producto_id>/", add_to_cart, name="add_to_cart"),
+    path("view-cart/", view_cart, name="view_cart"),
+    path('update-cart/<int:producto_id>/<int:cantidad>/', update_cart, name='update_cart'),
+    path("remove-from-cart/<int:producto_id>/", remove_from_cart, name="remove_from_cart"),
+    
     #user
     path('users/', get_users, name='get_users'),
 
