@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { AuthProvider } from '../Context/AuthContext';
+
 import PrivateRoute from '../components/PrivateRoute';
 import Home from '../page/Home';
 import Contact from '../page/Contact';
@@ -14,6 +14,7 @@ import CarritoComprasP from '../page/CarritoPage';
 import RegAdmin from '../page/RegAdmin'
 import PaymentPage from '../page/Pagos';
 import UserP from '../page/Users';
+import { AuthProvider } from '../Context/AuthContext';
 
 export default function Routing() {
   return (

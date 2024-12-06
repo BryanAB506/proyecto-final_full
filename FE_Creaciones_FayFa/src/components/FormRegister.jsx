@@ -46,7 +46,6 @@ export default function FormLogin() {
       await postUsers(username, first_name, last_name, email, password)
 
       Swal.fire("Se ha registrado exitosamente!");
-      
 
       navigate("/");// redirige al login
     } catch (error) {

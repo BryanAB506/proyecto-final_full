@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import postDireccion from "../services/PostDireccion";
 import '../styles/PaymentPage.css'
+import Swal from "sweetalert2";
 
 const PaymentPage = ({ orderData }) => {
     const [formState, setFormState] = useState({
@@ -10,7 +12,7 @@ const PaymentPage = ({ orderData }) => {
             direccion: "",
             ciudad: "",
             estado: "",
-            codigoPostal: "",
+            codigo_Postal: "",
         },
         paymentProof: null,
     });
@@ -60,8 +62,8 @@ const PaymentPage = ({ orderData }) => {
 
         // Validaciones
         if (formState.deliveryMethod === "delivery") {
-            const { direccion, ciudad, estado, codigoPostal } = formState.addressDetails;
-            if (!direccion || !ciudad || !estado || !codigoPostal) {
+            const { direccion, ciudad, estado, codigo_Postal } = formState.addressDetails;
+            if (!direccion || !ciudad || !estado || !codigo_Postal) {
                 alert("Por favor, complete todos los campos de dirección.");
                 return;
             }
@@ -85,24 +87,62 @@ const PaymentPage = ({ orderData }) => {
                 formData.append(key, formState.addressDetails[key]);
             });
 
-            // Simulación de envío (reemplazar con URL real del backend)
-            const response = await fetch("/api/upload-comprobante", {
-                method: "POST",
-                body: formData,
-            });
-
-            if (!response.ok) {
-                throw new Error("Error al completar la compra.");
-            }
-
-            const data = await response.json();
-            console.log("Datos enviados correctamente:", data);
-            alert("Compra completada con éxito!");
+          
         } catch (error) {
-            console.error("Error en el envío:", error);
-            alert("Hubo un problema al procesar la compra. Por favor, inténtelo de nuevo.");
+       
         }
     };
+
+
+    const [direccion, setDireccion] = useState("")
+    const [codigo_postal, setCodigo_Postal] = useState("")
+    const [Usuarios_id, setUsuarios] = useState("")
+    const [provincia, setProvincia] = useState("")
+    const [Canton, setCanton] = useState("")
+    const [Distrito, setDistrito] = useState("")
+
+
+
+    const cargaDireccion = (e) => {
+        setDireccion(e.target.value);
+    };
+
+    const cargaCodigo_postal = (e) => {
+        setCodigo_Postal(e.target.value);
+    };
+
+    const cargaUsuarios = (e) => {
+        setUsuarios(e.target.value);
+    };
+
+    const cargaProvincia = (e) => {
+        setProvincia(e.target.value);
+    };
+
+    const cargaCanton = (e) => {
+        setCanton(e.target.value);
+    };
+
+    const cargaDistrito = (e) => {
+        setDistrito(e.target.value);
+    };
+    
+
+
+    const cargarEnvio = async (e) => {
+        e.preventDefault();
+        try {
+          await postDireccion(direccion, codigo_postal, Usuarios_id, Canton, Distrito, provincia)
+    
+          Swal.fire("Compra completada con éxito!");
+          if (!response.ok) {
+            throw new Error("Error al completar la compra.");
+        }
+        } catch (error) {
+            console.error("Error en el envío:", error);
+            Swal.fire("Hubo un problema al procesar la compra. Por favor, inténtelo de nuevo.");
+        }
+      }
 
     return (
         <Container className="payment-container">
@@ -113,7 +153,7 @@ const PaymentPage = ({ orderData }) => {
                 <h4>Resumen de la Orden</h4>
                 <div className="p-3 border rounded">
                     <p>
-                        <strong>Usuario:</strong> {orderData?.Usuarios || "N/A"}
+                        <strong value={Usuarios_id} onChange={cargaUsuarios}>Usuario:</strong> {orderData?.Usuarios || "N/A"}
                     </p>
                     <p>
                         <strong>Fecha de la Orden:</strong>{" "}
@@ -129,7 +169,7 @@ const PaymentPage = ({ orderData }) => {
             </div>
 
             {/* Formulario */}
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={cargarEnvio}>
                 <h4>Paso 1: Método de Envío</h4>
                 <Form.Check
                     type="radio"
@@ -156,31 +196,42 @@ const PaymentPage = ({ orderData }) => {
                             <Form.Label>Dirección</Form.Label>
                             <Form.Control
                                 type="text"
-                                value={formState.addressDetails.direccion}
+                                value= {formState.addressDetails.direccion}
                                 placeholder="Ingrese su dirección"
-                                onChange={(e) => handleAddressChange("direccion", e.target.value)}
+                                onChange={cargaDireccion}
                             />
                         </Form.Group>
                         <Row>
                             <Col>
                                 <Form.Group className="mb-3">
-                                    <Form.Label>Ciudad</Form.Label>
+                                    <Form.Label>Provincia</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        value={formState.addressDetails.ciudad}
-                                        placeholder="Ingrese su ciudad"
-                                        onChange={(e) => handleAddressChange("ciudad", e.target.value)}
+                                        value={formState.addressDetails.provincia}
+                                        placeholder="Ingrese su provincia"
+                                        onChange={cargaProvincia}
                                     />
                                 </Form.Group>
                             </Col>
                             <Col>
                                 <Form.Group className="mb-3">
-                                    <Form.Label>Estado</Form.Label>
+                                    <Form.Label>Canton</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        value={formState.addressDetails.estado}
-                                        placeholder="Ingrese su estado"
-                                        onChange={(e) => handleAddressChange("estado", e.target.value)}
+                                        value={formState.addressDetails.Canton}
+                                        placeholder="Ingrese su canton"
+                                        onChange={cargaCanton}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Distrito</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        value={formState.addressDetails.Distrito}
+                                        placeholder="Ingrese su distrito"
+                                        onChange={cargaDistrito}
                                     />
                                 </Form.Group>
                             </Col>
@@ -189,9 +240,9 @@ const PaymentPage = ({ orderData }) => {
                                     <Form.Label>Código Postal</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        value={formState.addressDetails.codigoPostal}
+                                        value={formState.addressDetails.codigo_Postal}
                                         placeholder="Ingrese su código postal"
-                                        onChange={(e) => handleAddressChange("codigoPostal", e.target.value)}
+                                        onChange={cargaCodigo_postal}
                                     />
                                 </Form.Group>
                             </Col>

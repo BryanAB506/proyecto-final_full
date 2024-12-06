@@ -1,10 +1,10 @@
 // src/components/PrivateRoute.jsx
-import React from 'react';
+import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../Context/AuthContext';
+import FayFaContext from '../Context/FayFaContext';
 
 const PrivateRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useContext(FayFaContext)
 
   return isAuthenticated ? children : <Navigate to="/" />;
 };
