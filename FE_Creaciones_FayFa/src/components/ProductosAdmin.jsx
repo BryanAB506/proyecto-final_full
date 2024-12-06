@@ -23,8 +23,19 @@ function ProductosAdm() {
                                     <Card.Body>
                                         <Card.Title>{producto.nombre}</Card.Title>
                                         <Card.Text>
-                                            {producto.descripcion_producto}
+                                            <strong>descripcion:</strong> {producto.descripcion_producto}
                                         </Card.Text>
+                                        <Card.Text>
+                                            <strong>Precio:</strong> ₡{producto.precio}
+                                        </Card.Text>
+                                        <Card.Text>
+                                            <strong>Stock:</strong> {producto.stock}
+                                        </Card.Text>
+                                        <Card.Text>
+                                            <strong>Categoría:</strong> {producto.Categorias}
+                                        </Card.Text>
+                                        
+                                        
                                         <div className="d-flex justify-content-between">
                                             <Button variant="primary" size="sm" style={{ backgroundColor: "#212529" }}>
                                                 Editar
