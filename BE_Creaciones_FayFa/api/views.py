@@ -26,6 +26,126 @@ def get_users(request):
     serializer = UserSerializer(users, many=True) 
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import CarritoDeCompras, CartItem
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def view_cart(request, section='default_section'):
+    try:
+        # Obtener el carrito de compras de un usuario y sección específica
+        carrito = CarritoDeCompras.objects.get(user=request.user, section=section)
+        
+        # Obtener los items del carrito
+        cart_items = CartItem.objects.filter(cart=carrito).select_related('Productos', 'Productos__Categorias')
+        
+        # Crear la lista de productos con los datos que quieres mostrar
+        cart_items_data = []
+        for item in cart_items:
+            cart_items_data.append({
+                'product_id': item.Productos.id,
+                'product_name': item.Productos.nombre,
+                'product_description': item.Productos.descripcion_producto,
+                'product_price': item.Productos.precio,
+                'product_image': item.Productos.imagen_product,
+                'product_category': item.Productos.Categorias.nombre_categoria,
+                'quantity': item.quantity,
+                'total_price': item.total(),  # Precio total por item
+            })
+        
+        # Preparar la respuesta con el total del carrito y los productos
+        data = {
+            'cart_total': carrito.total,
+            'cart_items': cart_items_data,
+        }
+        return Response(data, status=200)
+    
+    except CarritoDeCompras.DoesNotExist:
+        return Response({'cart_total': 0, 'cart_items': []}, status=200)
+
+
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import NotFound
+from .models import Productos, CarritoDeCompras, CartItem
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def add_to_cart(request, product_id, quantity, section='default_section'):
+    try:
+        producto = Productos.objects.get(id=product_id)
+    except Productos.DoesNotExist:
+        raise NotFound(detail="Producto no encontrado")
+    
+    # Verificar si ya existe un carrito para el usuario
+    carrito, created = CarritoDeCompras.objects.get_or_create(
+        user=request.user,
+        section=section,  # Puedes permitir al usuario seleccionar la sección o usar una predeterminada
+        defaults={'total': 0.0}
+    )
+    
+    # Verificar si el producto ya está en el carrito
+    cart_item, item_created = CartItem.objects.get_or_create(
+        cart=carrito,
+        Productos=producto,
+        defaults={
+            'quantity': quantity,
+            'price': producto.precio,
+        }
+    )
+    
+    if not item_created:
+        # Si el producto ya existe en el carrito, actualizamos la cantidad
+        cart_item.quantity += quantity
+        cart_item.save()
+    
+    # Actualizamos el total del carrito
+    carrito.actualizar_total()
+    
+    # Retornar respuesta con el carrito actualizado
+    return Response({'cart_total': carrito.total, 'items_count': carrito.items.count()}, status=status.HTTP_200_OK)
+
+#actualizar productos carrito
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.exceptions import NotFound
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def remove_from_cart(request, product_id, quantity, section='default_section'):
+    try:
+        producto = Productos.objects.get(id=product_id)
+    except Productos.DoesNotExist:
+        raise NotFound(detail="Producto no encontrado")
+    
+    try:
+        carrito = CarritoDeCompras.objects.get(user=request.user, section=section)
+    except CarritoDeCompras.DoesNotExist:
+        raise NotFound(detail="Carrito no encontrado")
+    
+    try:
+        cart_item = CartItem.objects.get(cart=carrito, Productos=producto)
+    except CartItem.DoesNotExist:
+        raise NotFound(detail="Producto no está en el carrito")
+    
+    # Reducir la cantidad o eliminar el producto
+    if quantity >= cart_item.quantity:
+        cart_item.delete()
+    else:
+        cart_item.quantity -= quantity
+        cart_item.save()
+    
+    # Actualizar el total del carrito
+    carrito.actualizar_total()
+    
+    return Response({'cart_total': carrito.total, 'items_count': carrito.items.count()}, status=status.HTTP_200_OK)
+
 
 #permisos para admin
 
