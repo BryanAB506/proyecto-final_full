@@ -4,7 +4,7 @@ import getCategorias from '../services/GetCategorias';
 import { getProductos } from '../services/GetProductos';
 import FayFaContext from "../Context/FayFaContext";
 import '../styles/Productos.css';
-import postViewCarrito from '../services/PostCarritoView';
+import { addToCart } from '../services/carritoservices';
 
 function Productos() {
     const [categorias, setCategorias] = useState([]);
@@ -49,31 +49,42 @@ function Productos() {
 
     const [loading, setLoading] = useState(false);
 
+    // const agregarAlCarrito = async (producto) => {
+    //     setLoading(true);
+    //     try {
+    //         const data = {
+    //             quantity: 1, // Puede permitir al usuario elegir la cantidad
+    //             price: producto.precio,
+    //             Productos_id: producto.id,
+    //             cart_id: 1,
+    //         };
+    //         console.log('Estos son los datos de data: ', data);
+
+
+    //         const response = await postViewCarrito(data);
+
+    //         console.log('Producto agregado al carrito:', response);
+    //         alert('Producto agregado al carrito con éxito');
+    //     } catch (error) {
+    //         console.error('Error al agregar al carrito:', error);
+    //         alert('Error al agregar al carrito');
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
     const agregarAlCarrito = async (producto) => {
-      setLoading(true);
-      try {
-        const data = {
-          quantity: 1, // Puede permitir al usuario elegir la cantidad
-          price: producto.precio,
-          Productos_id: producto.id,
-          cart_id: 1, 
-        };
-        console.log('Estos son los datos de data: ', data);
-        
-  
-        const response = await postViewCarrito(data);
-  
-        console.log('Producto agregado al carrito:', response);
-        alert('Producto agregado al carrito con éxito');
-      } catch (error) {
-        console.error('Error al agregar al carrito:', error);
-        alert('Error al agregar al carrito');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-
+        setLoading(true); // Mostrar "Agregando..." en el botón
+        try {
+            const response = await addToCart(producto.id, 1, 'default_section'); // Llamar a la API con cantidad = 1
+            console.log('Producto añadido al carrito:', response);
+            alert(`${producto.nombre} fue añadido al carrito.`);
+        } catch (error) {
+            console.error(error.message);
+            alert('Hubo un problema al añadir el producto al carrito.');
+        } finally {
+            setLoading(false); // Ocultar "Agregando..." en el botón
+        }
+    }
 
     return (
         <div>
