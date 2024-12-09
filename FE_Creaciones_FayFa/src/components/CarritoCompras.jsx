@@ -1,134 +1,131 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Row, Col, Card, Button, ListGroup, Form } from "react-bootstrap";
-import { fetchCartItems, updateCartItem, removeCartItem } from "../services/carritoservices"
+import { Container, Row, Col, Card, Button, ListGroup } from "react-bootstrap";
+import { fetchCartItems, addToCart, removeFromCart } from "../services/carritoservices"; // Ajusta la ruta según tu estructura
 
 const ShoppingCart = () => {
     const [cartItems, setCartItems] = useState([]);
-    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     // Cargar el carrito desde la API
+    
     useEffect(() => {
         const loadCartItems = async () => {
             try {
-                const items = await fetchCartItems();
-                setCartItems(items);
-                setLoading(false);
+                const items = await fetchCartItems();  // Llamada a la API
+                console.log("Respuesta de la API:", items);  // Verifica la respuesta completa
+                setCartItems(items);  // Asigna directamente el arreglo de productos a cartItems
             } catch (error) {
-                setLoading(false);
+                console.error("Error al cargar los productos del carrito:", error.message);
+                setCartItems([]);  // En caso de error, asignamos un arreglo vacío
             }
         };
 
         loadCartItems();
     }, []);
 
-    // Actualizar la cantidad de un producto
-    const handleUpdateQuantity = async (id, cantidad) => {
-        if (cantidad <= 0) return; // Evitar cantidades negativas o cero
-        try {
-            const updatedItem = await updateCartItem(id, cantidad);
-    
-            setCartItems((prevItems) =>
-                prevItems.map((item) =>
-                    item.id === id
-                        ? { ...item, quantity: updatedItem.cantidad, total: updatedItem.total }
-                        : item
-                )
-            );
-        } catch (error) {
-            console.error("Error al actualizar la cantidad:", error);
-        }
-    };
-    
 
 
-    // Eliminar un producto del carrito
-    const handleRemoveItem = async (id) => {
+    const handleAddToCart = async (productId) => {
         try {
-            await removeCartItem(id);
-            setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+            await addToCart(productId, 1);  // Añadir el producto al carrito
+            const updatedItems = await fetchCartItems();  // Recargar los productos del carrito
+            setCartItems(updatedItems.cart_items || []);  // Actualiza con los nuevos items
         } catch (error) {
-            console.error("Error al eliminar el producto:", error);
+            console.error("Error al añadir producto al carrito:", error.message);
         }
     };
 
-    // Calcular el subtotal
+    const handleRemoveFromCart = async (productId) => {
+        try {
+            await removeFromCart(productId, 1);  // Eliminar un producto del carrito
+            const updatedItems = await fetchCartItems();  // Recargar los productos del carrito
+            setCartItems(updatedItems.cart_items || []);  // Actualiza con los nuevos items
+        } catch (error) {
+            console.error("Error al quitar producto del carrito:", error.message);
+        }
+    };
+
     const calculateSubtotal = () => {
         return cartItems
-            .reduce((total, item) => {
-                const precio = parseFloat(item.price) || 0;
-                const cantidad = parseInt(item.quantity) || 0;
-                return total + precio * cantidad;
-            }, 0)
-            .toFixed(2);
+            .reduce((acc, item) => acc + item.product_price * item.quantity, 0)  // Usar 'product_price' en lugar de 'price'
+            .toFixed(2);  // Formato con dos decimales
     };
-
-
-    if (loading) {
-        return <p>Cargando carrito...</p>;
-    }
-
-    if (cartItems.length === 0) {
-        return <p>No hay productos en el carrito.</p>;
-    }
+    
 
     return (
         <Container>
             <Row>
-                {/* Sección del carrito */}
+                {/* Sección de los productos del carrito */}
                 <Col md={8}>
-                    <br />
-                    <h2>Carrito</h2>
-                    <br />
                     <ListGroup variant="flush">
-                        {cartItems.map((item) => (
-                            <ListGroup.Item key={item.id}>
-                                <Row>
-                                    <Col md={2}>
-                                        <img src={item.image} alt={item.name} className="img-fluid" />
-                                    </Col>
-                                    <Col md={6}>
-                                        <h5>{item.name}</h5>
-                                        <p>{item.description}</p>
-                                        <p>
-                                            <strong>Categoría:</strong> {item.category}
-                                        </p>
-                                    </Col>
-                                    <Col md={2}>
-                                        <Form.Control
-                                            as="select"
-                                            value={item.quantity}
-                                            onChange={(e) => handleUpdateQuantity(item.id, parseInt(e.target.value))}
-                                        >
-                                            {[...Array(10).keys()].map((x) => (
-                                                <option key={x + 1} value={x + 1}>
-                                                    {x + 1}
-                                                </option>
-                                            ))}
-                                        </Form.Control>
+                        {cartItems.length === 0 ? (
+                            <p>No hay productos en el carrito.</p>  // Mensaje si no hay productos en el carrito
+                        ) : (
+                            cartItems.map((item) => (
+                                <ListGroup.Item key={item.product_id}>
+                                    <Row>
+                                        <Col md={2}>
+                                            <img src={item.product_image} alt={item.product_name} className="img-fluid" />
+                                        </Col>
+                                        <Col md={6}>
+                                            <h5>{item.product_name}</h5>
+                                            <p>{item.product_description}</p>
+                                            <p><strong>Categoría:</strong> {item.product_category}</p>
+                                        </Col>
+                                        <Col md={2} className="d-flex flex-column align-items-center">
+                                            <div className="d-flex align-items-center">
+                                                <Button
+                                                    variant="secondary"
+                                                    size="sm"
+                                                    onClick={() => handleRemoveFromCart(item.product_id)}
+                                                    style={{
+                                                        color: "black",
+                                                        backgroundColor: "#f0f0f0", // Color de fondo
+                                                        border: "1px solid #ccc", // Borde del botón
+                                                        padding: "5px 10px", // Espaciado interno
+                                                        borderRadius: "5px", // Bordes redondeados
+                                                        fontSize: "16px", // Tamaño de fuente
+                                                        cursor: "pointer", // Cambiar el cursor al pasar por encima
+                                                        transition: "background-color 0.3s ease", // Efecto al pasar el cursor
+                                                    }}
+                                                    onMouseOver={(e) => e.target.style.backgroundColor = "#e0e0e0"} // Efecto hover
+                                                    onMouseOut={(e) => e.target.style.backgroundColor = "#f0f0f0"} // Restablecer al salir
+                                                >
+                                                    -
+                                                </Button>
 
-                                    </Col>
-                                    <Col md={2} className="d-flex flex-column align-items-center">
-                                        <p>
-                                            <strong>{(item.price * item.quantity).toFixed(2)} €</strong>
-                                        </p>
-                                        <Button
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => handleRemoveItem(item.id)}
-                                            style={{
-                                                backgroundColor: "#212529",
-                                                borderColor: "#FF5733",
-                                                margin: "10px",
-                                            }}
-                                        >
-                                            Eliminar
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </ListGroup.Item>
-                        ))}
+                                                <p style={{ margin: "0 10px", fontSize: "16px", color: "#333", textAlign: "center" }}>
+                                                    {item.quantity}
+                                                </p>
+
+                                                <Button
+                                                    variant="secondary"
+                                                    size="sm"
+                                                    onClick={() => handleAddToCart(item.product_id)}
+                                                    style={{
+                                                        color: "black",
+                                                        backgroundColor: "#f0f0f0",
+                                                        border: "1px solid #ccc",
+                                                        padding: "5px 10px",
+                                                        borderRadius: "5px",
+                                                        fontSize: "16px",
+                                                        cursor: "pointer",
+                                                        transition: "background-color 0.3s ease",
+                                                    }}
+                                                    onMouseOver={(e) => e.target.style.backgroundColor = "#e0e0e0"}
+                                                    onMouseOut={(e) => e.target.style.backgroundColor = "#f0f0f0"}
+                                                >
+                                                    +
+                                                </Button>
+
+                                            </div>
+                                            <p><strong>{(item.product_price * item.quantity).toFixed(2)} €</strong></p>
+                                        </Col>
+                                    </Row>
+                                </ListGroup.Item>
+                            ))
+                        )}
                     </ListGroup>
                 </Col>
 
@@ -144,11 +141,10 @@ const ShoppingCart = () => {
                                     <Row>
                                         <Col>Subtotal</Col>
                                         <Col>
-                                            <strong>{calculateSubtotal()} €</strong>
+                                            <strong>{calculateSubtotal()}</strong>
                                         </Col>
                                     </Row>
                                 </ListGroup.Item>
-
                             </ListGroup>
                             <Button
                                 variant="dark"
@@ -169,5 +165,6 @@ const ShoppingCart = () => {
         </Container>
     );
 };
+
 
 export default ShoppingCart;

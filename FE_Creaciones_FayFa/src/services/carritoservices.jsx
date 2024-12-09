@@ -1,51 +1,82 @@
-// cartServices.js
-
 // Servicio para obtener los productos del carrito
 export const fetchCartItems = async () => {
     try {
-        const response = await fetch("http://localhost:8000/api/view-cart/");
+        const token = sessionStorage.getItem("access_token"); // Usa el token de sesión
+        const response = await fetch("http://localhost:8000/api/view-cart/", {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
         if (!response.ok) {
-            throw new Error('Error al cargar el carrito');
+            throw new Error("Error al cargar el carrito");
         }
+
         const data = await response.json();
-        return data.carrito || [];
+        return data.cart_items || [];
     } catch (error) {
         console.error("Error al cargar los productos del carrito:", error);
         throw error;
     }
 };
 
-// Servicio para actualizar la cantidad de un producto
-export const updateCartItem = async (id, cantidad) => {
-    const response = await fetch(`http://127.0.0.1:8000/api/update-cart/${id}/${cantidad}/`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-
-    if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-
-    return await response.json();
-};
 
 
-
-
-// Servicio para eliminar un producto del carrito
-export const removeCartItem = async (id) => {
+export const addToCart = async (productId, quantity, section = 'default_section') => {
     try {
-        const response = await fetch(`/api/remove-from-cart/${id}/`, {
-            method: 'POST',
+        const token = sessionStorage.getItem("access_token"); // Obtener access_token
+        if (!token) {
+            throw new Error("No se encontró el token de acceso.");
+        }
+
+        const response = await fetch(`http://localhost:8000/api/add_to_cart/${productId}/${quantity}/`, {
+            method: 'GET', // Tu view usa el método GET
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
         });
 
-        if (!response.ok) {
-            throw new Error('Error al eliminar el producto');
+        if (response.ok) {
+            const data = await response.json();
+            console.log("Producto añadido al carrito", data);
+            return data;
+        } else {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || "Error al añadir producto al carrito");
         }
     } catch (error) {
-        console.error("Error al eliminar el producto del carrito:", error);
+        console.error("Error al añadir producto al carrito:", error.message);
+        throw error;
+    }
+};
+
+export const removeFromCart = async (productId, quantity, section = 'default_section') => {
+    try {
+        const token = sessionStorage.getItem("access_token"); // Obtener access_token
+        if (!token) {
+            throw new Error("No se encontró el token de acceso.");
+        }
+
+        const response = await fetch(`http://localhost:8000/api/remove_from_cart/${productId}/${quantity}/`, {
+            method: 'POST', // Tu view usa el método POST
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log("Producto eliminado del carrito", data);
+            return data;
+        } else {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || "Error al eliminar producto del carrito");
+        }
+    } catch (error) {
+        console.error("Error al eliminar producto del carrito:", error.message);
         throw error;
     }
 };
