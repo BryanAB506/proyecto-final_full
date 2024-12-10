@@ -5,10 +5,12 @@ import { getProductos } from '../services/GetProductos';
 import FayFaContext from "../Context/FayFaContext";
 import '../styles/Productos.css';
 import { addToCart } from '../services/carritoservices';
+import Swal from 'sweetalert2'
 
 function Productos() {
     const [categorias, setCategorias] = useState([]);
-
+    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
+    const [busqueda, setBusqueda] = useState("");
     // Función para obtener categorías
     async function cargarCategorias() {
         try {
@@ -23,6 +25,8 @@ function Productos() {
     useEffect(() => {
         cargarCategorias();
     }, []);
+
+
 
 
 
@@ -49,35 +53,13 @@ function Productos() {
 
     const [loading, setLoading] = useState(false);
 
-    // const agregarAlCarrito = async (producto) => {
-    //     setLoading(true);
-    //     try {
-    //         const data = {
-    //             quantity: 1, // Puede permitir al usuario elegir la cantidad
-    //             price: producto.precio,
-    //             Productos_id: producto.id,
-    //             cart_id: 1,
-    //         };
-    //         console.log('Estos son los datos de data: ', data);
 
-
-    //         const response = await postViewCarrito(data);
-
-    //         console.log('Producto agregado al carrito:', response);
-    //         alert('Producto agregado al carrito con éxito');
-    //     } catch (error) {
-    //         console.error('Error al agregar al carrito:', error);
-    //         alert('Error al agregar al carrito');
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
     const agregarAlCarrito = async (producto) => {
         setLoading(true); // Mostrar "Agregando..." en el botón
         try {
             const response = await addToCart(producto.id, 1, 'default_section'); // Llamar a la API con cantidad = 1
             console.log('Producto añadido al carrito:', response);
-            alert(`${producto.nombre} fue añadido al carrito.`);
+            Swal.fire(`${producto.nombre} fue añadido al carrito.`);
         } catch (error) {
             console.error(error.message);
             alert('Hubo un problema al añadir el producto al carrito.');
@@ -85,6 +67,29 @@ function Productos() {
             setLoading(false); // Ocultar "Agregando..." en el botón
         }
     }
+
+
+
+    // Manejo del campo de búsqueda
+    const handleBusquedaChange = (event) => {
+        setBusqueda(event.target.value);
+    };
+
+    // Manejo del filtro de categoría
+    const handleCategoriaChange = (event) => {
+        setCategoriaSeleccionada(event.target.value);
+    };
+
+    // Filtrar productos según la búsqueda y la categoría seleccionada
+    const productosFiltrados = productos.filter((producto) => {
+        const coincideBusqueda = producto.nombre.toLowerCase().includes(busqueda.toLowerCase());
+        const coincideCategoria = categoriaSeleccionada ? producto.nombre_categoria === categoriaSeleccionada : true;
+        return coincideBusqueda && coincideCategoria;
+    });
+
+
+
+
 
     return (
         <div>
@@ -96,8 +101,9 @@ function Productos() {
                     type="text"
                     placeholder="Buscar productos..."
                     value=""
-                // onChange={handleSearchChange}
+                    onChange={handleBusquedaChange}
                 />
+                
             </Form>
             <Container fluid>
                 <Row>
@@ -108,7 +114,7 @@ function Productos() {
                             {/* Categorías como opciones en Género */}
                             <Form.Group>
                                 <Form.Label>Categorías</Form.Label>
-                                <Form.Select name="category">
+                                <Form.Select name="category" value={categoriaSeleccionada} onChange={handleCategoriaChange}>
                                     <option value="">Todas</option>
                                     {categorias.map((categoria) => (
                                         <option key={categoria.id} value={categoria.nombre_categoria}>
@@ -138,7 +144,7 @@ function Productos() {
 
                     <Col md={9}>
                         <Row>
-                            {productos.map((producto) => (
+                            {productosFiltrados.map((producto) => (
                                 <Col key={producto.id} md={4} className="mb-4">
                                     <Card>
                                         <Card.Img
@@ -147,6 +153,9 @@ function Productos() {
                                         />
                                         <Card.Body>
                                             <Card.Title>{producto.nombre}</Card.Title>
+                                            <Card.Text>
+                                                <strong>Categoría:</strong> {producto.nombre_categoria}
+                                            </Card.Text>
                                             <Card.Text>
                                                 <strong>Estilo:</strong> {producto.descripcion_producto}
                                             </Card.Text>
