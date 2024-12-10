@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import getUsers from "../services/GetUsers";
-import { Table, Container, Form, Row, Col } from "react-bootstrap";
+import { Table, Container, Form, Row, Col, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const Usuarios = () => {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState(""); 
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -27,6 +30,23 @@ const Usuarios = () => {
   return (
     <Container>
       <h2 className="my-4">Usuarios</h2>
+      <Button
+        variant="dark"
+        style={{
+          backgroundColor: "#212529",
+          borderColor: "#FF5733",
+          margin: "10px",
+        }}
+        onClick={() => {
+          try {
+            navigate("/admin");
+          } catch (error) {
+            console.error("Error navigating:", error);
+          }
+        }}
+      >
+        Volver a administrador
+      </Button>
 
       {/* Barra de búsqueda */}
       <Row className="mb-3">
