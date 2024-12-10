@@ -8,7 +8,7 @@ import PostCategorias from '../services/PostCategorias';
 import getCategorias from "../services/GetCategorias";
 import postProductos from "../services/PostProductos";
 import Swal from 'sweetalert2'
-import {UploadFile} from '../firebase/Config'
+import { UploadFile } from '../firebase/Config'
 import FayFaContext from "../Context/FayFaContext";
 
 
@@ -62,7 +62,7 @@ export default function FormAdminC() {
       const categoriasF = await getCategorias();
       setCategorias(categoriasF)//actuaciza el estado
     } catch (error) {
-      console.error({message: error})
+      console.error({ message: error })
     }
   }
 
@@ -78,8 +78,8 @@ export default function FormAdminC() {
 
 
 
-  const [nombre, setnombre] = useState ('')
-  const [descripcion_producto, setdescripcion_producto] = useState ('')
+  const [nombre, setnombre] = useState('')
+  const [descripcion_producto, setdescripcion_producto] = useState('')
   const [precio, setprecio] = useState('')
   const [stock, setstock] = useState('')
 
@@ -107,27 +107,27 @@ export default function FormAdminC() {
       const productoAgregado = await postProductos(nombre, descripcion_producto, precio, stock, selectedCategoria, imagen_product);
       setNuevoProducto(productoAgregado)
 
-        Swal.fire("Producto agregado con éxito.");
+      Swal.fire("Producto agregado con éxito.");
     } catch (error) {
-        console.error("Error al agregar el producto:", error);
-        Swal.fire("Hubo un error al agregar el producto.");
+      console.error("Error al agregar el producto:", error);
+      Swal.fire("Hubo un error al agregar el producto.");
     }
-};
+  };
 
 
 
 
-const [imagen_product, setimagen_product]= useState("")
-   //aplicaas el hooks
-const CargarImagen= async(e)=>{
-      const file = e.target.files[0]
-      setimagen_product(file)
-      if (file) {
-        const resultado= await UploadFile(file);
-        setimagen_product(resultado)
-      }
+  const [imagen_product, setimagen_product] = useState("")
+  //aplicaas el hooks
+  const CargarImagen = async (e) => {
+    const file = e.target.files[0]
+    setimagen_product(file)
+    if (file) {
+      const resultado = await UploadFile(file);
+      setimagen_product(resultado)
+    }
 
-    } // la funcion cargarImagen
+  } // la funcion cargarImagen
 
 
 
@@ -159,6 +159,7 @@ const CargarImagen= async(e)=>{
               borderColor: "#FF5733",
               margin: "10px",
             }}
+            onClick={() => navigate("/usuarios")}
           >
             Ver usuarios
           </Button>
@@ -246,7 +247,7 @@ const CargarImagen= async(e)=>{
             </Form.Select>
             <Form.Group className="mb-3">
               <Form.Label>imagen de productos</Form.Label>
-              <Form.Control type="file"  onChange={CargarImagen} />
+              <Form.Control type="file" onChange={CargarImagen} />
             </Form.Group>
             <div className="text-center">
               <Button
