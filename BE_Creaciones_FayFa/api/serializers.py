@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Direcciones_envio, Categorias, Productos, CarritoDeCompras, Ordenes, Pagos, CartItem
 from django.contrib.auth.models import User
 
-from rest_framework import serializers
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,10 +35,17 @@ class CategoriasSerializer(serializers.ModelSerializer):
         model = Categorias
         fields = '__all__'
         
+
+
 class ProductosSerializer(serializers.ModelSerializer):
+    nombre_categoria = serializers.CharField(source='Categorias.nombre_categoria', read_only=True)
+
     class Meta:
         model = Productos
-        fields = '__all__'
+        fields = ['id', 'nombre', 'descripcion_producto', 'precio', 'stock', 'Categorias', 'nombre_categoria', 'imagen_product']
+
+
+
 
 class CarritoDeComprasSerializer(serializers.ModelSerializer):
     class Meta:
@@ -49,11 +56,28 @@ class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
         fields = '__all__'
-        
+
+
+
+
 class OrdenesSerializer(serializers.ModelSerializer):
+    total = serializers.SerializerMethodField()
+    
+
+
+    # Corrige el 'source' para acceder al nombre del usuario
+    usuario_nombre = serializers.CharField(source='Usuarios.get_full_name', read_only=True)
+
     class Meta:
         model = Ordenes
-        fields = '__all__'
+        fields = ['id', 'fecha_orden', 'estado', 'Usuarios', 'usuario_nombre', 'carrito', 'total']
+
+    def get_total(self, obj):
+        return obj.carrito.total if obj.carrito else None
+
+    
+
+    
         
 class PagosSerializer(serializers.ModelSerializer):
     class Meta:

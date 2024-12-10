@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -52,6 +53,12 @@ REST_FRAMEWORK = {
     ),
 }
 
+
+DEFAULTS = {
+
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=180),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
 
 
 CORS_ALLOWED_ORIGINS = [
@@ -98,8 +105,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'creaciones_fayfa',  # El nombre de tu base de datos en MySQL
-        'USER': 'freddy',  # Tu usuario de MySQL
-        'PASSWORD': 'fredroot_30FWD',  # La contraseña de tu usuario MySQL
+        'USER': 'brayan',  # Tu usuario de MySQL
+        'PASSWORD': 'B10102018A',  # La contraseña de tu usuario MySQL
         'HOST': '127.0.0.1',  # Si estás ejecutando MySQL localmente
         'PORT': '3306',  # El puerto por defecto de MySQL
     }

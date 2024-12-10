@@ -22,7 +22,7 @@ const ShoppingCart = () => {
         };
 
         loadCartItems();
-    }, []);
+    }, [cartItems]);
 
 
 

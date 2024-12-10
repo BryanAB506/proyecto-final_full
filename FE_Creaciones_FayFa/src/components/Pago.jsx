@@ -1,8 +1,11 @@
-import React, { useState } from "react";
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import React, { useState, useEffect, useContext } from "react";
+import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 import postDireccion from "../services/PostDireccion";
+import getOrden from "../services/GetPago";
 import Swal from "sweetalert2";
+import FayFaContext from "../Context/FayFaContext";
 import '../styles/pagos.css'
+
 
 const PaymentPage = ({ orderData }) => {
     const [formState, setFormState] = useState({
@@ -61,23 +64,23 @@ const PaymentPage = ({ orderData }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         if (formState.deliveryMethod === "delivery") {
             const { direccion, provincia, canton, distrito, codigo_postal } = formState.addressDetails;
-    
+
             if (!direccion || !provincia || !canton || !distrito || !codigo_postal) {
                 Swal.fire("Por favor, complete todos los campos de dirección.");
                 return;
             }
-    
+
             // Asegurarnos de que `Usuarios_id` esté disponible
             const Usuarios_id = orderData?.Usuarios || formState.userId;
-    
+
             if (!Usuarios_id) {
                 Swal.fire("No se encontró el ID del usuario. Por favor, inténtelo de nuevo.");
                 return;
             }
-    
+
             // Guardar dirección en la base de datos
             try {
                 await postDireccion(
@@ -95,57 +98,92 @@ const PaymentPage = ({ orderData }) => {
                 return;
             }
         }
-    
+
         if ((formState.paymentMethod === "sinpe" || formState.paymentMethod === "transfer") && !formState.paymentProof) {
             alert("Por favor, suba un comprobante de pago.");
             return;
         }
-    
+
         // Procesar el resto del formulario
         try {
             const formData = new FormData();
             formData.append("deliveryMethod", formState.deliveryMethod);
             formData.append("paymentMethod", formState.paymentMethod);
-    
+
             if (formState.paymentProof) {
                 formData.append("paymentProof", formState.paymentProof);
             }
-    
+
             Object.keys(formState.addressDetails).forEach((key) => {
                 formData.append(key, formState.addressDetails[key]);
             });
-    
+
             Swal.fire("Compra completada con éxito!");
         } catch (error) {
             console.error("Error en el envío:", error);
             Swal.fire("Hubo un problema al procesar la compra.");
         }
     };
+
+
+
+    const [productos, setProductos] = useState([]);
+    // useEffect para cargar los productos al montar el componente
+    useEffect(() => {
+        const fetchProductos = async () => {
+            try {
+                console.log("Llamando a getOrden...");
+                const data = await getOrden();
+                console.log("Datos recibidos:", data);
+                setProductos(data);
+            } catch (error) {
+                console.error('Error al obtener las órdenes:', error);
+            }
+        };
+        fetchProductos();
+    }, []);
     
+
+
+
 
     return (
         <Container className="payment-container">
             <h2 className="my-4">Página de Pago</h2>
 
             {/* Resumen de la Orden */}
-            <div className="mb-4">
-                <h4>Resumen de la Orden</h4>
-                <div className="p-3 border rounded">
-                    <p>
-                        <strong>Usuario:</strong> {orderData?.Usuarios || "N/A"}
-                    </p>
-                    <p>
-                        <strong>Fecha de la Orden:</strong>{" "}
-                        {new Date(orderData?.fecha_orden).toLocaleDateString() || "N/A"}
-                    </p>
-                    <p>
-                        <strong>Estado:</strong> {orderData?.estado || "Pendiente"}
-                    </p>
-                    <p>
-                        <strong>Total:</strong> {`₡${orderData?.total || "0.00"}`}
-                    </p>
-                </div>
-            </div>
+            {productos?.length > 0 ? (
+                productos.map((producto) => (
+                    <Col key={producto.id} md={4} className="mb-4">
+                    <h4>Resumen de la Orden</h4>
+                    <Card className="p-3 border rounded">
+                        {/* Mostrar el nombre del usuario */}
+                        <Card.Text>
+                            <strong>Usuario:</strong> {producto.usuario_nombre || "N/A"}
+                        </Card.Text>
+                        
+                        {/* Mostrar la fecha de la orden */}
+                        <Card.Text>
+                            <strong>Fecha de la Orden:</strong> {new Date(producto.fecha_orden).toLocaleDateString() || "N/A"}
+                        </Card.Text>
+
+                        {/* Mostrar el estado de la orden */}
+                        <Card.Text>
+                            <strong>Estado:</strong> {producto?.estado || "Pendiente"}
+                        </Card.Text>
+                        
+                        {/* Mostrar el total */}
+                        <Card.Text>
+                            <strong>Total:</strong> {`₡${producto?.total || "0.00"}`}
+                        </Card.Text>
+                    </Card>
+                </Col>
+                
+                ))
+            ) : (
+                <p>No hay órdenes disponibles.</p>
+            )}
+
 
             {/* Formulario */}
             <Form onSubmit={handleSubmit}>

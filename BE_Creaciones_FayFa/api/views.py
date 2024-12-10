@@ -234,15 +234,27 @@ class CartItemDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated] 
 # Ordenes
 
+
+
 class OrdenesListCreate(generics.ListCreateAPIView):
-    queryset = Ordenes.objects.all()
     serializer_class = OrdenesSerializer
-    permission_classes = [AllowAny]
-    
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Filtra las órdenes para que solo aparezcan las del usuario autenticado
+        return Ordenes.objects.filter(Usuarios=self.request.user)
+
+
 class OrdenesDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Ordenes.objects.all()
     serializer_class = OrdenesSerializer
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Filtra las órdenes para que solo aparezcan las del usuario autenticado
+        return Ordenes.objects.filter(Usuarios=self.request.user)
+
+
+
     
 # Pagos
 class PagosListCreate(generics.ListCreateAPIView):
