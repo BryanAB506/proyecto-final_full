@@ -55,15 +55,17 @@ def view_cart(request, section='default_section'):
                 'total_price': item.total(),  # Precio total por item
             })
         
-        # Preparar la respuesta con el total del carrito y los productos
+        # Preparar la respuesta con el ID del carrito, total y productos
         data = {
+            'cart_id': carrito.id,  # Incluye el ID del carrito
             'cart_total': carrito.total,
             'cart_items': cart_items_data,
         }
         return Response(data, status=200)
     
     except CarritoDeCompras.DoesNotExist:
-        return Response({'cart_total': 0, 'cart_items': []}, status=200)
+        return Response({'cart_id': None, 'cart_total': 0, 'cart_items': []}, status=200)  # Incluye un cart_id nulo si no existe
+
 
 
 from rest_framework.response import Response
@@ -232,10 +234,10 @@ class CartItemDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
     permission_classes = [IsAuthenticated] 
-# Ordenes
 
 
 
+#ordenes para usuarios
 class OrdenesListCreate(generics.ListCreateAPIView):
     serializer_class = OrdenesSerializer
     permission_classes = [IsAuthenticated]
@@ -253,6 +255,46 @@ class OrdenesDetail(generics.RetrieveUpdateDestroyAPIView):
         # Filtra las órdenes para que solo aparezcan las del usuario autenticado
         return Ordenes.objects.filter(Usuarios=self.request.user)
 
+#ordenes admin
+class OrdenesAdminListCreate(generics.ListCreateAPIView):
+    queryset = Ordenes.objects.all()
+    serializer_class = OrdenesSerializer
+    permission_classes = [AllowAny]
+    
+class OrdenesAdminDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Ordenes.objects.all()
+    serializer_class = OrdenesSerializer
+    permission_classes = [IsAuthenticated] 
+
+
+from django.http import JsonResponse
+from .models import Ordenes, CartItem
+
+def get_ordenes_admin(request):
+    ordenes = Ordenes.objects.select_related('carrito').prefetch_related('carrito__items__Productos').all()
+
+    data = []
+    for orden in ordenes:
+        productos = [
+            {
+                'nombre': item.Productos.nombre,
+                'descripcion': item.Productos.descripcion_producto,
+                'precio': float(item.price),
+                'categoria': item.Productos.Categorias.nombre_categoria,
+                'cantidad': item.quantity,
+            }
+            for item in orden.carrito.items.all()
+        ]
+        data.append({
+            'id': orden.id,
+            'fecha_orden': orden.fecha_orden,
+            'estado': orden.estado,
+            'usuario_nombre': orden.Usuarios.first_name,
+            'email': orden.Usuarios.email,
+            'productos': productos,
+        })
+
+    return JsonResponse(data, safe=False)
 
 
     
@@ -285,3 +327,45 @@ class LoginView(generics.GenericAPIView):
             })
         return Response({'error': 'Credenciales inválidas'}, status=400)
     
+
+from django.shortcuts import get_object_or_404
+
+class CrearOrdenView(APIView):
+    def post(self, request):
+        user = request.user
+        carrito_id = request.data.get("carrito_id")
+        
+        # Verificar que el carrito existe y pertenece al usuario
+        carrito = get_object_or_404(CarritoDeCompras, id=carrito_id, user=user)
+
+        # Verificar si ya existe una orden pendiente asociada al carrito
+        orden, created = Ordenes.objects.get_or_create(
+            Usuarios=user,
+            carrito=carrito,
+            defaults={'estado': 'pendiente'}
+        )
+
+        # Si la orden ya existe, actualizar el estado (opcional)
+        if not created:
+            orden.estado = 'pendiente'
+            orden.save()
+
+        # Serializar y retornar la respuesta
+        serializer = OrdenesSerializer(orden)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+#eliminar orden
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import Ordenes
+
+@csrf_exempt  # Para desactivar la protección CSRF para este caso (usar con precaución)
+def eliminar_pedido(request, pedido_id):
+    try:
+        # Obtener el pedido por su ID
+        pedido = Ordenes.objects.get(id=pedido_id)
+        # Eliminar el pedido
+        pedido.delete()
+        return JsonResponse({"message": "Pedido eliminado con éxito."}, status=200)
+    except Ordenes.DoesNotExist:
+        return JsonResponse({"error": "Pedido no encontrado."}, status=404)

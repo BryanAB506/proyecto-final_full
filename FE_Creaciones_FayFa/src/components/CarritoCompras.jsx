@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Card, Button, ListGroup } from "react-bootstrap";
 import { fetchCartItems, addToCart, removeFromCart } from "../services/carritoservices"; // Ajusta la ruta según tu estructura
+import { createOrder, fetchCartItemsA } from "../services/Ordenesservices";
 
 const ShoppingCart = () => {
     const [cartItems, setCartItems] = useState([]);
     const navigate = useNavigate();
+    
 
     // Cargar el carrito desde la API
     
@@ -13,7 +15,6 @@ const ShoppingCart = () => {
         const loadCartItems = async () => {
             try {
                 const items = await fetchCartItems();  // Llamada a la API
-                console.log("Respuesta de la API:", items);  // Verifica la respuesta completa
                 setCartItems(items);  // Asigna directamente el arreglo de productos a cartItems
             } catch (error) {
                 console.error("Error al cargar los productos del carrito:", error.message);
@@ -51,6 +52,30 @@ const ShoppingCart = () => {
             .reduce((acc, item) => acc + item.product_price * item.quantity, 0)  // Usar 'product_price' en lugar de 'price'
             .toFixed(2);  // Formato con dos decimales
     };
+    
+    //completar e ir a pago
+    const handleCreateOrder = async () => {
+        try {
+            const cartData = await fetchCartItemsA();
+            console.log("Cart Data:", cartData); // Asegúrate de que contiene cart_id, cart_total y cart_items
+    
+            if (!cartData.cart_id) {
+                console.error("No hay carrito asociado.");
+                return;
+            }
+    
+            const orderData = await createOrder({ cart_id: cartData.cart_id });
+            console.log("Orden creada:", orderData);
+    
+            navigate("/pago");
+        } catch (error) {
+            console.error("Error en el proceso de crear orden:", error.message);
+        }
+    };
+    
+    
+    
+    
     
 
     return (
@@ -154,9 +179,9 @@ const ShoppingCart = () => {
                                     borderColor: "#FF5733",
                                     margin: "10px",
                                 }}
-                                onClick={() => navigate("/pago")}
+                                onClick={() => handleCreateOrder()}
                             >
-                                Pasar por caja
+                                Pasar a pago
                             </Button>
                         </Card.Body>
                     </Card>
