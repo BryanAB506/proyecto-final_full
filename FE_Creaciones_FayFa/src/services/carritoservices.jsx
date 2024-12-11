@@ -22,7 +22,7 @@ export const fetchCartItems = async () => {
 };
 
 
-
+//añadir producto id/cantidad
 export const addToCart = async (productId, quantity, section = 'default_section') => {
     try {
         const token = sessionStorage.getItem("access_token"); // Obtener access_token
@@ -52,6 +52,8 @@ export const addToCart = async (productId, quantity, section = 'default_section'
     }
 };
 
+
+//eliminar prodcuto id/cantidad
 export const removeFromCart = async (productId, quantity, section = 'default_section') => {
     try {
         const token = sessionStorage.getItem("access_token"); // Obtener access_token

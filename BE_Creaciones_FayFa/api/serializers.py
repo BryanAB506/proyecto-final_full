@@ -52,25 +52,29 @@ class CarritoDeComprasSerializer(serializers.ModelSerializer):
         model = CarritoDeCompras
         fields = '__all__'
         
+        
+# class CartItemSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = CartItem
+#         fields = '__all__'
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
-        fields = '__all__'
-
+        fields = ['Productos', 'quantity', 'price']
 
 
 
 class OrdenesSerializer(serializers.ModelSerializer):
     total = serializers.SerializerMethodField()
     
-
-
+    carrito_items = CartItemSerializer(source='carrito.items', many=True, read_only=True)
+    email = serializers.CharField(source='Usuarios.email', read_only=True)
     # Corrige el 'source' para acceder al nombre del usuario
     usuario_nombre = serializers.CharField(source='Usuarios.get_full_name', read_only=True)
 
     class Meta:
         model = Ordenes
-        fields = ['id', 'fecha_orden', 'estado', 'Usuarios', 'usuario_nombre', 'carrito', 'total']
+        fields = ['id', 'fecha_orden', 'estado', 'Usuarios', 'usuario_nombre','email', 'carrito', 'total','carrito_items']
 
     def get_total(self, obj):
         return obj.carrito.total if obj.carrito else None

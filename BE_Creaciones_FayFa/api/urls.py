@@ -1,10 +1,16 @@
 from django.urls import path
 from . import views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import get_users, remove_from_cart, view_cart
+from .views import get_users, remove_from_cart, view_cart, CrearOrdenView
 
 
 urlpatterns = [
+    #admin ordenes
+    path('adminOrdenes/', views.get_ordenes_admin, name='get_ordenes_admin'),
+    #eliminar orden
+    path('adminOrdenes/<int:pedido_id>/eliminar/', views.eliminar_pedido, name='eliminar_pedido'),
+    #crear orden
+    path('crear-orden/', CrearOrdenView.as_view(), name='crear-orden'),
     #agregar producto a acarrito
     path('add_to_cart/<int:product_id>/<int:quantity>/', views.add_to_cart, name='add_to_cart'),
     #quitar proudcto carrito
@@ -37,6 +43,10 @@ urlpatterns = [
     # Órdenes
     path('Ordenes/', views.OrdenesListCreate.as_view(), name='Ordenes-list'),
     path('Ordenes/<int:pk>/', views.OrdenesDetail.as_view(), name='Ordenes-detail'),
+    
+    #ordenes admin
+    path('OrdenesAdmin/', views.OrdenesAdminListCreate.as_view(), name='OrdenesAdmin-list'),
+    path('OrdenesAdmin/<int:pk>/', views.OrdenesAdminDetail.as_view(), name='OrdenesAdmin-detail'),
 
     # Pagos
     path('pagos/', views.PagosListCreate.as_view(), name='Pagos-list'),
