@@ -51,7 +51,7 @@ class CarritoDeCompras(models.Model):
 
 class CartItem(models.Model):
     cart = models.ForeignKey(CarritoDeCompras, related_name='items', on_delete=models.CASCADE)
-    Productos = models.ForeignKey('Productos', on_delete=models.CASCADE)  # Relación con el modelo Producto
+    Productos = models.ForeignKey(Productos, on_delete=models.CASCADE)  # Relación con el modelo Producto
     quantity = models.PositiveIntegerField(default=1)  # Cantidad del producto
     price = models.DecimalField(max_digits=10, decimal_places=2)  # Precio del producto
 
@@ -81,9 +81,9 @@ class Ordenes(models.Model):
     
 
 class Pagos(models.Model):
-    Ordenes = models.ForeignKey('Ordenes', on_delete=models.CASCADE)
+    Ordenes = models.ForeignKey(Ordenes, on_delete=models.CASCADE)
     metodo_pago = models.CharField(max_length=50)
-    comprobante_pago = models.BinaryField()
+    comprobante_pago = models.TextField(default="0")
 
     def __str__(self):
         return f"{self.Ordenes} - {self.metodo_pago} - {self.comprobante_pago}"

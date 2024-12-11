@@ -15,6 +15,7 @@ import RegAdmin from '../page/RegAdmin'
 import PaymentPage from '../page/Pagos';
 import UserP from '../page/Users';
 import { AuthProvider } from '../Context/AuthContext';
+import GetClienteId from '../components/decodificarToken';
 
 export default function Routing() {
   return (
@@ -34,6 +35,10 @@ export default function Routing() {
           <Route path='/RegistroAdmin' element={<RegAdmin />} />
           <Route path='/pago' element={<PaymentPage />} />
           <Route path='/usuarios' element={<UserP />} />
+
+          <Route path='/token' element={<GetClienteId />} />
+
+          
         </Routes>
       </Router>
     </AuthProvider>

@@ -1,13 +1,13 @@
-async function postDireccion(direccion, codigo_postal, Usuarios_id, Canton, Distrito, provincia) {
+async function postDireccion(DireccionData) {
     try {
-      const DireccionData = { 
-        direccion,
-        codigo_postal,
-        Usuarios_id,
-        Canton,
-        Distrito, 
-        provincia 
-      };
+    //   const DireccionData = { 
+    //     direccion,
+    //     codigo_postal,
+    //     Usuarios_id,
+    //     Canton,
+    //     Distrito, 
+    //     provincia 
+    // };
   
       const response = await fetch("http://127.0.0.1:8000/api/Direcciones_envio/", {
         method: 'POST',
