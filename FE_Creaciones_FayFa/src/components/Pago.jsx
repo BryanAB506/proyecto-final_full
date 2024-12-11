@@ -5,9 +5,15 @@ import getOrden from "../services/GetPago";
 import Swal from "sweetalert2";
 import FayFaContext from "../Context/FayFaContext";
 import '../styles/pagos.css'
+import GetClienteId from "./decodificarToken";
+// import { use } from "react";
 
 
-const PaymentPage = ({ orderData }) => {
+const PaymentPage = () => {
+
+    const user_id = GetClienteId()
+    console.log(user_id)
+
     const [formState, setFormState] = useState({
         deliveryMethod: "",
         paymentMethod: "",
@@ -19,7 +25,7 @@ const PaymentPage = ({ orderData }) => {
             codigo_postal: "",
         },
         paymentProof: null,
-        userId: orderData?.Usuarios || "", // Asumiendo que `orderData` incluye el ID del usuario
+        userId: user_id || "", // Asumiendo que incluye el ID del usuario
     });
 
     const handleInputChange = (key, value) => {
@@ -74,12 +80,13 @@ const PaymentPage = ({ orderData }) => {
             }
 
             // Asegurarnos de que `Usuarios_id` esté disponible
-            const Usuarios_id = orderData?.Usuarios || formState.userId;
+            const Usuarios_id = user_id;
 
             if (!Usuarios_id) {
                 Swal.fire("No se encontró el ID del usuario. Por favor, inténtelo de nuevo.");
                 return;
             }
+            console.log(Usuarios_id);
 
             // Guardar dirección en la base de datos
             try {
@@ -142,7 +149,7 @@ const PaymentPage = ({ orderData }) => {
         };
         fetchProductos();
     }, []);
-    
+
 
 
 
@@ -155,30 +162,30 @@ const PaymentPage = ({ orderData }) => {
             {productos?.length > 0 ? (
                 productos.map((producto) => (
                     <Col key={producto.id} md={4} className="mb-4">
-                    <h4>Resumen de la Orden</h4>
-                    <Card className="p-3 border rounded">
-                        {/* Mostrar el nombre del usuario */}
-                        <Card.Text>
-                            <strong>Usuario:</strong> {producto.usuario_nombre || "N/A"}
-                        </Card.Text>
-                        
-                        {/* Mostrar la fecha de la orden */}
-                        <Card.Text>
-                            <strong>Fecha de la Orden:</strong> {new Date(producto.fecha_orden).toLocaleDateString() || "N/A"}
-                        </Card.Text>
+                        <h4>Resumen de la Orden</h4>
+                        <Card className="p-3 border rounded">
+                            {/* Mostrar el nombre del usuario */}
+                            <Card.Text>
+                                <strong>Usuario:</strong> {producto.usuario_nombre || "N/A"}
+                            </Card.Text>
 
-                        {/* Mostrar el estado de la orden */}
-                        <Card.Text>
-                            <strong>Estado:</strong> {producto?.estado || "Pendiente"}
-                        </Card.Text>
-                        
-                        {/* Mostrar el total */}
-                        <Card.Text>
-                            <strong>Total:</strong> {`₡${producto?.total || "0.00"}`}
-                        </Card.Text>
-                    </Card>
-                </Col>
-                
+                            {/* Mostrar la fecha de la orden */}
+                            <Card.Text>
+                                <strong>Fecha de la Orden:</strong> {new Date(producto.fecha_orden).toLocaleDateString() || "N/A"}
+                            </Card.Text>
+
+                            {/* Mostrar el estado de la orden */}
+                            <Card.Text>
+                                <strong>Estado:</strong> {producto?.estado || "Pendiente"}
+                            </Card.Text>
+
+                            {/* Mostrar el total */}
+                            <Card.Text>
+                                <strong>Total:</strong> {`₡${producto?.total || "0.00"}`}
+                            </Card.Text>
+                        </Card>
+                    </Col>
+
                 ))
             ) : (
                 <p>No hay órdenes disponibles.</p>
