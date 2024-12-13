@@ -1,14 +1,16 @@
-async function postDireccion(DireccionData) {
+async function postDireccion( direccion, codigo_postal, Usuarios, Canton, Distrito, provincia ) {
     try {
-    //   const DireccionData = { 
-    //     direccion,
-    //     codigo_postal,
-    //     Usuarios_id,
-    //     Canton,
-    //     Distrito, 
-    //     provincia 
-    // };
-  
+      const DireccionData = { 
+        direccion:direccion,
+        codigo_postal:codigo_postal,
+        Usuarios:Usuarios,
+        Canton:Canton, 
+        Distrito:Distrito, 
+        provincia:provincia 
+      };
+      
+      console.log("Datos enviados al backend:", DireccionData);
+      
       const response = await fetch("http://127.0.0.1:8000/api/Direcciones_envio/", {
         method: 'POST',
         headers: {
@@ -16,6 +18,10 @@ async function postDireccion(DireccionData) {
         },
         body: JSON.stringify(DireccionData)
       });
+
+
+      console.log(response);
+      
   
       if (!response.ok) {
         const errorData = await response.json();
