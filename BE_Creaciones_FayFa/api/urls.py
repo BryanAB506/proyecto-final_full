@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import get_users, remove_from_cart, view_cart, CrearOrdenView
+from .views import get_users, remove_from_cart, view_cart, CrearOrdenView, delete_user
 
 
 urlpatterns = [
@@ -18,6 +18,8 @@ urlpatterns = [
     path('view-cart/', view_cart, name='view_cart'),
     #user
     path('users/', get_users, name='get_users'),
+    #edit user
+    path('users/<int:pk>/', delete_user, name='delete_user'),
 
     # Direcciones de envío
     path('Direcciones_envio/', views.Direcciones_envioListCreate.as_view(), name='Direcciones_envio-list'),
