@@ -99,7 +99,7 @@ function Productos() {
             <Form className="my-3 w-50 mx-auto">
                 <Form.Control
                     type="text"
-                    placeholder="Buscar productos..."
+                    placeholder="Buscar producto..."
                     value=""
                     onChange={handleBusquedaChange}
                 />

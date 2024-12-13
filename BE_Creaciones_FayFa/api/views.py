@@ -31,6 +31,26 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import CarritoDeCompras, CartItem
 
+#eliminar usuario
+from django.contrib.auth.models import User
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_user(request, pk):
+    try:
+        user = User.objects.get(pk=pk)
+    except User.DoesNotExist:
+        return Response({"detail": "Usuario no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+
+    # Eliminar el usuario
+    user.delete()
+    return Response({"detail": "Usuario eliminado correctamente."}, status=status.HTTP_204_NO_CONTENT)
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def view_cart(request, section='default_section'):
@@ -43,6 +63,7 @@ def view_cart(request, section='default_section'):
         
         # Crear la lista de productos con los datos que quieres mostrar
         cart_items_data = []
+        total_quantity = 0  # Variable para contar la cantidad total de productos
         for item in cart_items:
             cart_items_data.append({
                 'product_id': item.Productos.id,
@@ -54,17 +75,19 @@ def view_cart(request, section='default_section'):
                 'quantity': item.quantity,
                 'total_price': item.total(),  # Precio total por item
             })
+            total_quantity += item.quantity  # Sumar la cantidad de cada producto
         
         # Preparar la respuesta con el ID del carrito, total y productos
         data = {
             'cart_id': carrito.id,  # Incluye el ID del carrito
             'cart_total': carrito.total,
             'cart_items': cart_items_data,
+            'cart_count': total_quantity,  # Incluye el total de productos
         }
         return Response(data, status=200)
     
     except CarritoDeCompras.DoesNotExist:
-        return Response({'cart_id': None, 'cart_total': 0, 'cart_items': []}, status=200)  # Incluye un cart_id nulo si no existe
+        return Response({'cart_id': None, 'cart_total': 0, 'cart_items': [], 'cart_count': 0}, status=200)  # Incluye un cart_count de 0
 
 
 

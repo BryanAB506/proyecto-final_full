@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import "../styles/AdminPage.css";
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { Table, Form, Button, Container, Row, Col, Modal } from "react-bootstrap";
 // import { useAuth } from "../Context/AuthContext";
 import { Await, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -10,12 +10,13 @@ import postProductos from "../services/PostProductos";
 import Swal from 'sweetalert2'
 import { UploadFile } from '../firebase/Config'
 import FayFaContext from "../Context/FayFaContext";
-
+import { deleteCategoria, updateCategoria } from "../services/DeletePutCategorias";
 
 
 export default function FormAdminC() {
   const { logout, setNuevoProducto } = useContext(FayFaContext);
   const navigate = useNavigate();
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const handleLogout = () => {
     logout(); // cerrar sesión
@@ -130,6 +131,53 @@ export default function FormAdminC() {
   } // la funcion cargarImagen
 
 
+  const handleDeleteCategoria = async (id) => {
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "¡No podrás revertir esta acción!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteCategoria(id); // Llama a la función de eliminación
+        setCategorias(categorias.filter((c) => c.id !== id)); // Actualiza el estado local
+        Swal.fire("¡Eliminado!", "La categoría ha sido eliminada.", "success");
+      } catch (error) {
+        Swal.fire("Error", "No se pudo eliminar la categoría.", "error");
+      }
+    }
+  };
+
+
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+
+  const handleEditCategoria = (categoria) => {
+    setCategoriaSeleccionada(categoria); // Guarda la categoría seleccionada
+    setShowEditModal(true); // Abre el modal
+  };
+
+  const saveCategoriaEditada = async () => {
+    try {
+      await updateCategoria(categoriaSeleccionada.id, {
+        nombre_categoria: categoriaSeleccionada.nombre_categoria,
+        descripcion: categoriaSeleccionada.descripcion,
+      });
+      Swal.fire("¡Actualizado!", "La categoría ha sido actualizada.", "success");
+      obtenerCategoria(); // Recarga la lista de categorías
+      setShowEditModal(false); // Cierra el modal
+    } catch (error) {
+      Swal.fire("Error", "No se pudo actualizar la categoría.", "error");
+    }
+  };
+
+
+
 
 
 
@@ -137,45 +185,7 @@ export default function FormAdminC() {
     <div>
       <Container className="d-flex flex-column align-items-center">
         {/* Título */}
-        <h2 className="text-center mt-4">Administrador</h2>
-
-        {/* Botones arriba */}
-        <div className="d-flex justify-content-center mt-4 mb-4">
-          <Button
-            variant="dark"
-            style={{
-              backgroundColor: "#212529",
-              borderColor: "#FF5733",
-              margin: "10px",
-            }}
-            onClick={() => navigate("/pedidosadmin")}
-          >
-            Ver pedidos de usuarios
-          </Button>
-          <Button
-            variant="dark"
-            style={{
-              backgroundColor: "#212529",
-              borderColor: "#FF5733",
-              margin: "10px",
-            }}
-            onClick={() => navigate("/usuarios")}
-          >
-            Ver usuarios
-          </Button>
-          <Button
-            variant="dark"
-            style={{
-              backgroundColor: "#212529",
-              borderColor: "#FF5733",
-              margin: "10px",
-            }}
-            onClick={handleLogout}
-          >
-            Cerrar sesión
-          </Button>
-        </div>
-
+        <h2 className="text-center mt-4">Administrador</h2><br /><br />
 
 
 
@@ -206,6 +216,55 @@ export default function FormAdminC() {
             </div>
           </Form>
         </Col>
+
+        <Container>
+          {/* --------------tabla categorias------------------*/}
+          <Table striped bordered hover responsive className="my-4">
+            <thead className="table-dark">
+              <tr>
+                <th>Categoría</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {categorias.map((categoria) => (
+                <tr key={categoria.id}>
+                  <td>{categoria.nombre_categoria}</td>
+                  <td>{categoria.descripcion}</td>
+                  <td>
+                    <Button
+                      style={{
+                        backgroundColor: "#212529",
+                        borderColor: "#FF5733",
+                        margin: "10px",
+                      }}
+                      variant="warning"
+                      size="sm"
+                      className="me-2"
+                      onClick={() => handleEditCategoria(categoria)}
+                    >
+                      Editar
+                    </Button>
+                    <Button
+                      style={{
+                        backgroundColor: "#212529",
+                        borderColor: "#FF5733",
+                        margin: "5px",
+                      }}
+                      variant="danger"
+                      size="sm"
+                      onClick={() => handleDeleteCategoria(categoria.id)}
+                    >
+                      Eliminar
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Container>
+
 
         <br />
         <div className="linea"></div>
@@ -268,6 +327,63 @@ export default function FormAdminC() {
       <br />
       <br />
       <div className="linea"></div>
+
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Editar Categoría</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Nombre de la categoría</Form.Label>
+              <Form.Control
+                type="text"
+                value={categoriaSeleccionada?.nombre_categoria || ""}
+                onChange={(e) =>
+                  setCategoriaSeleccionada({
+                    ...categoriaSeleccionada,
+                    nombre_categoria: e.target.value,
+                  })
+                }
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Descripción</Form.Label>
+              <Form.Control
+                as="textarea"
+                value={categoriaSeleccionada?.descripcion || ""}
+                onChange={(e) =>
+                  setCategoriaSeleccionada({
+                    ...categoriaSeleccionada,
+                    descripcion: e.target.value,
+                  })
+                }
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" style={{
+                  backgroundColor: "#212529",
+                  borderColor: "#FF5733",
+                  margin: "10px",
+                }} onClick={() => setShowEditModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="primary" style={{
+                  backgroundColor: "#212529",
+                  borderColor: "#FF5733",
+                  margin: "10px",
+                }} onClick={saveCategoriaEditada}>
+            Guardar Cambios
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </div>
+
+
   );
+
+
 }

@@ -1,19 +1,67 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Navbar, Nav, Container, Dropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { fetchCartData } from "../services/GetContadorCarrito";
+import { fetchUserData } from "../services/GetUserNavbar";
 
 function CustomNavbar() {
-  // Estado local para la cantidad de productos en el carrito
-  const [cartCount, setCartCount] = useState(2); // Reemplaza con la lógica
+  const [cartCount, setCartCount] = useState(0);
+  const [user, setUser] = useState(null);  // Para almacenar los datos del usuario
+
+  // Obtener la información del carrito
+  const getCartData = async () => {
+    try {
+      const data = await fetchCartData();
+      setCartCount(data.cart_items.length); 
+    } catch (error) {
+      console.error("Error al obtener el carrito:", error);
+    }
+  };
+
+  // Obtener la información del usuario logueado
+  const getUserData = async () => {
+    try {
+      const token = sessionStorage.getItem("access_token");
+      if (!token) {
+        console.log("No token found");
+        return; // Si no hay token, no hacemos la solicitud
+      }
+      
+      const userData = await fetchUserData();  // Llamada para obtener el usuario
+      console.log("Datos del usuario:", userData);
+      setUser(userData);  // Guardamos los datos del usuario logueado
+    } catch (error) {
+      console.error("Error al obtener la información del usuario:", error);
+    }
+  };
+  
+
+  useEffect(() => {
+    getCartData();
+
+    // Actualizar los datos del carrito cada 500 ms
+    const intervalId = setInterval(() => {
+      getCartData();
+    }, 500);
+
+    // Limpiar el intervalo cuando el componente se desmonte
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    // Solo se llama a getUserData si hay un token en sessionStorage
+    if (sessionStorage.getItem("access_token")) {
+      getUserData();
+    }
+  }, []); // Esto se ejecutará una vez cuando el componente se cargue
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="py-3">
       <Container>
-        {/* Logo y Nombre de la Empresa */}
         <Navbar.Brand href="#" className="d-flex align-items-center">
           <img
-            src="src\\assets\\img\\logoS.jpg" 
+            src="src\\assets\\img\\logoS.jpg"
             alt="Logo"
             className="rounded-circle"
             style={{ width: "80px", height: "80px", marginRight: "10px" }}
@@ -23,10 +71,8 @@ function CustomNavbar() {
           </span>
         </Navbar.Brand>
 
-        {/* Toggle para dispositivos móviles */}
         <Navbar.Toggle aria-controls="navbar-nav" />
         <Navbar.Collapse id="navbar-nav">
-          {/* Links principales */}
           <Nav className="mx-auto" style={{ fontSize: "1.2rem" }}>
             <Nav.Link href="/home" className="mx-3">
               Inicio
@@ -42,72 +88,68 @@ function CustomNavbar() {
             </Nav.Link>
           </Nav>
 
-          {/* Perfil, carrito de compras y registro */}
-          <Nav style={{ fontSize: "1.2rem" }} className="align-items-center">
-            <Dropdown align="end">
-              <Dropdown.Toggle
-                id="dropdown-basic"
-                as="div" 
-                style={{ 
-                  display: "flex", 
-                  alignItems: "center", 
-                  cursor: "pointer", 
-                  color: "white" 
-                }}
+          <Nav style={{ fontSize: "1.2rem" }} className="d-flex align-items-center">
+            {/* Contenedor de perfil y carrito */}
+            <div style={{ display: "flex", alignItems: "center", marginRight: "10px" }}>
+              {/* Perfil */}
+              <Dropdown align="start">
+                <Dropdown.Toggle
+                  id="dropdown-basic"
+                  as="div"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    color: "white",
+                  }}
+                >
+                  <i
+                    className="bi bi-person-circle"
+                    style={{ marginRight: "8px", fontSize: "1.5rem", color: "gray" }}
+                  ></i>
+                  <span style={{ fontSize: "1rem", color: "white" }}>
+                    {user ? `${user.first_name} ${user.last_name}` : "Cargando..."}
+                  </span>
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Header className="text-center">
+                    <div style={{ fontWeight: "bold" }}>
+                      {user ? `${user.first_name} ${user.last_name}` : "Cargando..."}
+                    </div>
+                    <div style={{ fontSize: "0.85rem" }}>
+                      {user ? user.email : "Cargando..."}
+                    </div>
+                  </Dropdown.Header>
+                  <Dropdown.Divider />
+                  <Dropdown.Item href="/pedidos">Pedidos</Dropdown.Item>
+                  <Dropdown.Item href="/logout" className="text-danger">
+                    Logout
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+
+              {/* Carrito */}
+              <Nav.Link
+                href="/carritodecompras"
+                className="d-flex align-items-center position-relative"
               >
                 <i
-                  className="bi bi-person-circle"
-                  style={{ marginRight: "8px", fontSize: "1.5rem", color: "gray" }}
+                  className="bi bi-cart"
+                  style={{ marginRight: "8px", fontSize: "1.5rem" }}
                 ></i>
-                <span style={{ marginRight: "8px", color: "gray" }}></span>
-              </Dropdown.Toggle>
 
-              <Dropdown.Menu>
-                {/* ---------------------------Información del usuario---------------------------- */}
-                <Dropdown.Header className="text-center">
-                  <div style={{ fontWeight: "bold" }}>Nombre del Usuario</div>
-                  <div style={{ fontSize: "0.85rem" }}>
-                    usuario@gmail.com
-                  </div>
-                </Dropdown.Header>
-                <Dropdown.Divider />
-                {/* --------------------------------Accesos directos----------------------------- */}
-                <Dropdown.Item href="/pedidos">Pedidos</Dropdown.Item>
-                {/* <Dropdown.Item href="/carritodecompras">
-                  Carrito de Compras
-                </Dropdown.Item> */}
-                <Dropdown.Item href="/logout" className="text-danger">
-                  Logout
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-
-            {/* Carrito con contador */}
-            <Nav.Link href="/carritodecompras" className="d-flex align-items-center position-relative">
-              <i
-                className="bi bi-cart"
-                style={{ marginRight: "8px", fontSize: "1.5rem" }}
-              ></i>
-              
-              {/* ------------------------------cuenta de carrito-------------------------------- */}
-              {cartCount > 0 && (
-                <span
-                  className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                  style={{ fontSize: "0.8rem" }}
-                >
-                  {cartCount}
-                  <span className="visually-hidden">productos en el carrito</span>
-                </span>
-              )}
-            </Nav.Link>
-
-            {/* <Nav.Link href="/register" className="d-flex align-items-center">
-              <i
-                className="bi bi-pencil-square"
-                style={{ marginRight: "8px", fontSize: "1.5rem" }}
-              ></i>
-              Registro
-            </Nav.Link> */}
+                {cartCount > 0 && (
+                  <span
+                    className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    style={{ fontSize: "0.8rem" }}
+                  >
+                    {cartCount}
+                    <span className="visually-hidden">productos en el carrito</span>
+                  </span>
+                )}
+              </Nav.Link>
+            </div>
           </Nav>
         </Navbar.Collapse>
       </Container>
