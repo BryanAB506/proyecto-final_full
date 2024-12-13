@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
-import postDireccion from "../services/PostDireccion";
 import getOrden from "../services/GetPago";
 import Swal from "sweetalert2";
 import FayFaContext from "../Context/FayFaContext";
 import '../styles/pagos.css'
 import GetClienteId from "./decodificarToken";
-// import { use } from "react";
+import postDireccion from "../services/PostDireccion";
+import posComprobantePago from "../services/PostComprovantePagos";
+
 
 
 const PaymentPage = () => {
@@ -45,28 +46,7 @@ const PaymentPage = () => {
         }));
     };
 
-    const handleProofUpload = (file) => {
-        if (!file) {
-            alert("Por favor, seleccione un archivo.");
-            return;
-        }
-
-        const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
-        if (!allowedTypes.includes(file.type)) {
-            alert("Tipo de archivo no permitido. Solo se aceptan JPG, PNG o PDF.");
-            return;
-        }
-
-        if (file.size > 5 * 1024 * 1024) {
-            alert("El archivo excede el tamaño máximo de 5 MB.");
-            return;
-        }
-
-        setFormState((prevState) => ({
-            ...prevState,
-            paymentProof: file,
-        }));
-    };
+  
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -80,20 +60,20 @@ const PaymentPage = () => {
             }
 
             // Asegurarnos de que `Usuarios_id` esté disponible
-            const Usuarios_id = user_id;
+            const Usuarios = user_id;
 
-            if (!Usuarios_id) {
+            if (!Usuarios) {
                 Swal.fire("No se encontró el ID del usuario. Por favor, inténtelo de nuevo.");
                 return;
             }
-            console.log(Usuarios_id);
+            console.log(Usuarios);
 
             // Guardar dirección en la base de datos
             try {
                 await postDireccion(
                     direccion,
                     codigo_postal,
-                    Usuarios_id,
+                    Usuarios,
                     canton,
                     distrito,
                     provincia
@@ -112,6 +92,8 @@ const PaymentPage = () => {
         }
 
         // Procesar el resto del formulario
+      
+
         try {
             const formData = new FormData();
             formData.append("deliveryMethod", formState.deliveryMethod);
@@ -274,47 +256,7 @@ const PaymentPage = () => {
                     </div>
                 )}
 
-                <h4 className="mt-4">Paso 2: Método de Pago</h4>
-                <Form.Check
-                    type="radio"
-                    id="payLocal"
-                    label="Pagar en el local"
-                    value="local"
-                    name="paymentMethod"
-                    checked={formState.paymentMethod === "local"}
-                    onChange={(e) => handleInputChange("paymentMethod", e.target.value)}
-                />
-                <Form.Check
-                    type="radio"
-                    id="sinpe"
-                    label="Pagar por Sinpe Móvil"
-                    value="sinpe"
-                    name="paymentMethod"
-                    checked={formState.paymentMethod === "sinpe"}
-                    onChange={(e) => handleInputChange("paymentMethod", e.target.value)}
-                />
-                <Form.Check
-                    type="radio"
-                    id="bankTransfer"
-                    label="Pagar por transferencia bancaria"
-                    value="transfer"
-                    name="paymentMethod"
-                    checked={formState.paymentMethod === "transfer"}
-                    onChange={(e) => handleInputChange("paymentMethod", e.target.value)}
-                />
-                {(formState.paymentMethod === "sinpe" ||
-                    formState.paymentMethod === "transfer") && (
-                        <div className="mt-3">
-                            <Form.Group controlId="formFile" className="mb-3">
-                                <Form.Label>Subir comprobante de pago</Form.Label>
-                                <Form.Control
-                                    type="file"
-                                    onChange={(e) => handleProofUpload(e.target.files[0])}
-                                />
-                            </Form.Group>
-                        </div>
-                    )}
-
+                
                 <Button id="botonCompra" type="submit" variant="primary" className="mt-4">
                     Completar Compra
                 </Button>

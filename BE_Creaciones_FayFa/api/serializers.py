@@ -23,11 +23,20 @@ def validate_email (self, value):
 
 
      
-     
+
+
 class Direcciones_envioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Direcciones_envio
         fields = '__all__'
+
+    def validate(self, data):
+        if not data.get('direccion'):
+            raise serializers.ValidationError({"direccion": "La dirección es obligatoria."})
+        if not data.get('codigo_postal'):
+            raise serializers.ValidationError({"codigo_postal": "El código postal es obligatorio."})
+        return data
+
         
            
 class CategoriasSerializer(serializers.ModelSerializer):
