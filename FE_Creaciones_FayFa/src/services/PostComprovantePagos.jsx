@@ -1,11 +1,12 @@
-async function posComprobantePago(metodo_pago, comprobante_pago, Ordenes_id) {
+async function posComprobantePago(metodo_pago, comprobante_pago, Ordenes) {
     try {
         const payload = {
-            metodo_pago,
-            comprobante_pago, // Aquí envías directamente la URL
-            Ordenes_id,
+            Ordenes: metodo_pago,
+            metodo_pago:comprobante_pago,
+            comprobante_pago:Ordenes,
         };
-
+        console.log(payload);
+        
         const response = await fetch("http://127.0.0.1:8000/api/pagos/", {
             method: "POST",
             headers: {
