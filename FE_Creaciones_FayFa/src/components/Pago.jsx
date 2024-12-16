@@ -6,7 +6,8 @@ import FayFaContext from "../Context/FayFaContext";
 import '../styles/pagos.css'
 import GetClienteId from "./decodificarToken";
 import postDireccion from "../services/PostDireccion";
-import posComprobantePago from "../services/PostComprovantePagos";
+import { useNavigate } from 'react-router-dom'
+
 
 
 
@@ -14,6 +15,8 @@ const PaymentPage = () => {
 
     const user_id = GetClienteId()
     console.log(user_id)
+    const navigate = useNavigate ();
+
 
     const [formState, setFormState] = useState({
         deliveryMethod: "",
@@ -79,39 +82,15 @@ const PaymentPage = () => {
                     provincia
                 );
                 Swal.fire("Dirección guardada con éxito!");
+
+                navigate('/Segundopaso')
             } catch (error) {
                 console.error("Error guardando dirección:", error);
                 Swal.fire("Hubo un problema guardando la dirección.");
                 return;
             }
         }
-
-        if ((formState.paymentMethod === "sinpe" || formState.paymentMethod === "transfer") && !formState.paymentProof) {
-            alert("Por favor, suba un comprobante de pago.");
-            return;
-        }
-
-        // Procesar el resto del formulario
-      
-
-        try {
-            const formData = new FormData();
-            formData.append("deliveryMethod", formState.deliveryMethod);
-            formData.append("paymentMethod", formState.paymentMethod);
-
-            if (formState.paymentProof) {
-                formData.append("paymentProof", formState.paymentProof);
-            }
-
-            Object.keys(formState.addressDetails).forEach((key) => {
-                formData.append(key, formState.addressDetails[key]);
-            });
-
-            Swal.fire("Compra completada con éxito!");
-        } catch (error) {
-            console.error("Error en el envío:", error);
-            Swal.fire("Hubo un problema al procesar la compra.");
-        }
+       
     };
 
 
