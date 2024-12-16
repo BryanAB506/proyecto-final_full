@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import get_users, remove_from_cart, view_cart, CrearOrdenView, delete_user
+from .views import get_users, remove_from_cart, view_cart, CrearOrdenView, delete_user, usuarioLogueado, clear_cart
 
 
 urlpatterns = [
@@ -16,8 +16,12 @@ urlpatterns = [
     #quitar proudcto carrito
     path('remove_from_cart/<int:product_id>/<int:quantity>/', remove_from_cart, name='remove_from_cart'),
     path('view-cart/', view_cart, name='view_cart'),
+    #limpiar cart
+    path('cartClear/', clear_cart, name='clear_cart'),
     #user
     path('users/', get_users, name='get_users'),
+    # user log
+    path('usuarioLog/', usuarioLogueado, name='current_user'),
     #edit user
     path('users/<int:pk>/', delete_user, name='delete_user'),
 
@@ -49,6 +53,8 @@ urlpatterns = [
     #ordenes admin
     path('OrdenesAdmin/', views.OrdenesAdminListCreate.as_view(), name='OrdenesAdmin-list'),
     path('OrdenesAdmin/<int:pk>/', views.OrdenesAdminDetail.as_view(), name='OrdenesAdmin-detail'),
+    #editar estado
+    path('actualizar-estado/<int:pedido_id>/', views.actualizar_estado_pedido, name='actualizar_estado_pedido'),
 
     # Pagos
     path('pagos/', views.PagosListCreate.as_view(), name='Pagos-list'),

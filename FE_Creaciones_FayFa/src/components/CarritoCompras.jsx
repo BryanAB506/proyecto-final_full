@@ -57,7 +57,6 @@ const ShoppingCart = () => {
     const handleCreateOrder = async () => {
         try {
             const cartData = await fetchCartItemsA();
-            console.log("Cart Data:", cartData); // Asegúrate de que contiene cart_id, cart_total y cart_items
     
             if (!cartData.cart_id) {
                 console.error("No hay carrito asociado.");
@@ -65,7 +64,6 @@ const ShoppingCart = () => {
             }
     
             const orderData = await createOrder({ cart_id: cartData.cart_id });
-            console.log("Orden creada:", orderData);
     
             navigate("/pago");
         } catch (error) {
@@ -80,6 +78,7 @@ const ShoppingCart = () => {
 
     return (
         <Container>
+            <br /><h1 style={{ marginBottom: "20px", textAlign: "center", color: "#333" }}>Carrito de Compras</h1><br />
             <Row>
                 {/* Sección de los productos del carrito */}
                 <Col md={8}>

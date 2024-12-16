@@ -40,7 +40,6 @@ export const addToCart = async (productId, quantity, section = 'default_section'
 
         if (response.ok) {
             const data = await response.json();
-            console.log("Producto añadido al carrito", data);
             return data;
         } else {
             const errorData = await response.json();

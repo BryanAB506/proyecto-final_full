@@ -9,11 +9,12 @@ function CustomNavbar() {
   const [cartCount, setCartCount] = useState(0);
   const [user, setUser] = useState(null);  // Para almacenar los datos del usuario
 
+  
   // Obtener la información del carrito
   const getCartData = async () => {
     try {
       const data = await fetchCartData();
-      setCartCount(data.cart_items.length); 
+      setCartCount(data.cart_items.length);
     } catch (error) {
       console.error("Error al obtener el carrito:", error);
     }
@@ -27,15 +28,14 @@ function CustomNavbar() {
         console.log("No token found");
         return; // Si no hay token, no hacemos la solicitud
       }
-      
+
       const userData = await fetchUserData();  // Llamada para obtener el usuario
-      console.log("Datos del usuario:", userData);
       setUser(userData);  // Guardamos los datos del usuario logueado
     } catch (error) {
       console.error("Error al obtener la información del usuario:", error);
     }
   };
-  
+
 
   useEffect(() => {
     getCartData();
@@ -108,7 +108,11 @@ function CustomNavbar() {
                     style={{ marginRight: "8px", fontSize: "1.5rem", color: "gray" }}
                   ></i>
                   <span style={{ fontSize: "1rem", color: "white" }}>
-                    {user ? `${user.first_name} ${user.last_name}` : "Cargando..."}
+                    {user
+                      ? `${user.first_name} ${user.last_name}`
+                      : sessionStorage.getItem("access_token")
+                        ? "Cargando..."
+                        : "Iniciar sesión"}
                   </span>
                 </Dropdown.Toggle>
 
