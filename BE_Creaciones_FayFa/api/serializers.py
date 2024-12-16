@@ -26,9 +26,11 @@ def validate_email (self, value):
 
 
 class Direcciones_envioSerializer(serializers.ModelSerializer):
+    email_usuario = serializers.CharField(source='Usuarios.email', read_only=True)  # Obtener el email del usuario asociado
+
     class Meta:
         model = Direcciones_envio
-        fields = '__all__'
+        fields = '__all__'  # Incluir todos los campos del modelo, incluido el email_usuario
 
     def validate(self, data):
         if not data.get('direccion'):
@@ -36,6 +38,7 @@ class Direcciones_envioSerializer(serializers.ModelSerializer):
         if not data.get('codigo_postal'):
             raise serializers.ValidationError({"codigo_postal": "El código postal es obligatorio."})
         return data
+
 
         
            

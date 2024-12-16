@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useNavigate } from "react";
 import { Navbar, Nav, Container, Dropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -8,12 +8,18 @@ import { fetchUserData } from "../services/GetUserNavbar";
 function CustomNavbar() {
   const [cartCount, setCartCount] = useState(0);
   const [user, setUser] = useState(null);  // Para almacenar los datos del usuario
+  const navigate = useNavigate();
 
+  const salir = () => {
+    // Redirigir a la página de login
+    navigate('/');
+  };
+  
   // Obtener la información del carrito
   const getCartData = async () => {
     try {
       const data = await fetchCartData();
-      setCartCount(data.cart_items.length); 
+      setCartCount(data.cart_items.length);
     } catch (error) {
       console.error("Error al obtener el carrito:", error);
     }
@@ -27,15 +33,14 @@ function CustomNavbar() {
         console.log("No token found");
         return; // Si no hay token, no hacemos la solicitud
       }
-      
+
       const userData = await fetchUserData();  // Llamada para obtener el usuario
-      console.log("Datos del usuario:", userData);
       setUser(userData);  // Guardamos los datos del usuario logueado
     } catch (error) {
       console.error("Error al obtener la información del usuario:", error);
     }
   };
-  
+
 
   useEffect(() => {
     getCartData();
@@ -108,7 +113,11 @@ function CustomNavbar() {
                     style={{ marginRight: "8px", fontSize: "1.5rem", color: "gray" }}
                   ></i>
                   <span style={{ fontSize: "1rem", color: "white" }}>
-                    {user ? `${user.first_name} ${user.last_name}` : "Cargando..."}
+                    {user
+                      ? `${user.first_name} ${user.last_name}`
+                      : sessionStorage.getItem("access_token")
+                        ? "Cargando..."
+                        : "Iniciar sesión"}
                   </span>
                 </Dropdown.Toggle>
 
@@ -123,7 +132,7 @@ function CustomNavbar() {
                   </Dropdown.Header>
                   <Dropdown.Divider />
                   <Dropdown.Item href="/pedidos">Pedidos</Dropdown.Item>
-                  <Dropdown.Item href="/logout" className="text-danger">
+                  <Dropdown.Item className="text-danger" onClick={salir}>
                     Logout
                   </Dropdown.Item>
                 </Dropdown.Menu>

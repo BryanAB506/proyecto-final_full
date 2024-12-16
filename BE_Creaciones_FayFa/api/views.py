@@ -171,6 +171,41 @@ def remove_from_cart(request, product_id, quantity, section='default_section'):
     
     return Response({'cart_total': carrito.total, 'items_count': carrito.items.count()}, status=status.HTTP_200_OK)
 
+# limpiar cart items
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from .models import CarritoDeCompras, CartItem
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def clear_cart(request):
+    try:
+        # Buscar el carrito correspondiente al usuario
+        carrito = CarritoDeCompras.objects.get(user=request.user)
+        
+        # Eliminar todos los ítems del carrito
+        CartItem.objects.filter(cart=carrito).delete()
+        
+        # Actualizar el total del carrito
+        carrito.actualizar_total()
+        
+        return Response({
+            "message": "El carrito ha sido vaciado exitosamente.",
+            "cart_id": carrito.id,
+            "cart_total": carrito.total,
+        }, status=status.HTTP_200_OK)
+    
+    except CarritoDeCompras.DoesNotExist:
+        return Response({
+            "error": "No se encontró un carrito para el usuario autenticado."
+        }, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({
+            "error": f"Ha ocurrido un error: {str(e)}"
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 #permisos para admin
 
@@ -392,3 +427,47 @@ def eliminar_pedido(request, pedido_id):
         return JsonResponse({"message": "Pedido eliminado con éxito."}, status=200)
     except Ordenes.DoesNotExist:
         return JsonResponse({"error": "Pedido no encontrado."}, status=404)
+
+#Actualizar el estado de un pedido
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .models import Ordenes
+from .serializers import OrdenesSerializer  # Asegúrate de tener un serializador
+
+@api_view(['PUT'])
+def actualizar_estado_pedido(request, pedido_id):
+    try:
+        pedido = Ordenes.objects.get(id=pedido_id)  # Obtener el pedido por ID
+    except Ordenes.DoesNotExist:
+        return Response({"error": "Pedido no encontrado"}, status=404)
+
+    # Obtener el nuevo estado del pedido desde el request (debe ser un valor válido)
+    nuevo_estado = request.data.get('estado')
+    if nuevo_estado not in dict(Ordenes.ESTADO_Orden).keys():
+        return Response({"error": "Estado no válido"}, status=400)
+
+    # Actualizar el estado del pedido
+    pedido.estado = nuevo_estado
+    pedido.save()
+
+    # Devolver la respuesta con el pedido actualizado
+    serializer = OrdenesSerializer(pedido)
+    return Response(serializer.data, status=200)
+
+
+#usuario logueado
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+@api_view(['GET'])
+def usuarioLogueado(request):
+    permission_classes = [IsAuthenticated]
+    user = request.user
+    return Response({
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+    })

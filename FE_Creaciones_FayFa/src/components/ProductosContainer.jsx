@@ -100,15 +100,21 @@ function Productos() {
                 <Form.Control
                     type="text"
                     placeholder="Buscar producto..."
-                    value=""
+                    value={busqueda}
                     onChange={handleBusquedaChange}
                 />
-                
+
             </Form>
             <Container fluid>
                 <Row>
                     {/* Sidebar para filtros */}
-                    <Col md={3} className="bg-light p-3">
+                    <Col
+                        md={3} className="p-3" style={{
+                            backgroundColor: "rgb(201 201 201)", // Fondo oscuro
+                            color: "rgb(0, 0, 0)",          // Texto claro
+                            borderRadius: "5px",       // Bordes redondeados opcionales
+                        }}
+                    >
                         <h5>Filtros</h5>
                         <Form>
                             {/* Categorías como opciones en Género */}

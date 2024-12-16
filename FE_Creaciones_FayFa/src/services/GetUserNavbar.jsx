@@ -1,29 +1,21 @@
 export const fetchUserData = async () => {
-    const token = sessionStorage.getItem("access_token");
-  
-    if (!token) {
-      throw new Error("No token found");
-    }
-  
-    try {
-      const response = await fetch("http://localhost:8000/api/users/", {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error("Error al obtener la información del usuario");
-      }
-  
-      const data = await response.json();
-  
-      return data; // Devuelve la información del usuario logueado
-    } catch (error) {
-      console.error("Error al obtener la información del usuario:", error);
-      throw error;
-    }
-  };
-  
+  const token = sessionStorage.getItem("access_token");
+  if (!token) {
+    throw new Error("No access token found");
+  }
+
+  const response = await fetch("http://127.0.0.1:8000/api/usuarioLog/", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`, // Pasamos el token como header
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch user data");
+  }
+
+  const userData = await response.json();
+  return userData;
+};

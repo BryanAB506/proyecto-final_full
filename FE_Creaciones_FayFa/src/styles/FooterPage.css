@@ -1,146 +1,175 @@
 * {
-    padding: 0;
-    margin: 0;
-  }
-  
-  .footer {
-    background-color: #000000da; /* Fondo negro */
-    color: #ffffff; /* Texto blanco */
-    padding: 40px 0;
-  }
-  
+  padding: 0;
+  margin: 0;
+}
+
+.footer {
+  background-color: #000000da;
+  /* Fondo negro */
+  color: #ffffff;
+  /* Texto blanco */
+  padding: 40px 0;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  /* Permite que los elementos se ajusten en pantallas pequeñas */
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-column {
+  flex: 1;
+  margin: 20px;
+  min-width: 200px;
+}
+
+.footer-title {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #ffffff;
+  /* Texto blanco */
+  border-bottom: 2px solid #d4af37;
+  /* Subrayado dorado */
+  display: inline-block;
+}
+
+.footer-text {
+  color: #ffffff;
+  /* Texto blanco */
+  margin: 0;
+  font-size: 14px;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  /* Coloca los enlaces en una columna para pantallas pequeñas */
+  gap: 10px;
+  /* Espacio entre los enlaces */
+}
+
+.footer-link {
+  color: #ffffff;
+  /* Texto blanco */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #d4af37;
+  /* Color dorado al pasar el mouse */
+}
+
+.footer-bottom {
+  border-top: 1px solid #d4af37;
+  /* Línea dorada */
+  padding: 20px 0;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.footer-bottom-text {
+  color: #ffffff;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Estilo del botón cerrar sesión */
+.btn {
+  font-size: 13px;
+  background: transparent;
+  border: none;
+  padding: 1em 1.5em;
+  color: #fffffe;
+  text-transform: uppercase;
+  position: relative;
+  transition: 0.5s ease;
+  cursor: pointer;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background-color: #ffc506;
+  transition: 0.5s ease;
+}
+
+.btn:hover {
+  color: #ddbd4a;
+  transition-delay: 0.5s;
+}
+
+.btn:hover::before {
+  width: 100%;
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 0;
+  width: 100%;
+  background-color: #ffc506;
+  transition: 0.4s ease;
+  z-index: -1;
+}
+
+.btn:hover::after {
+  height: 90%;
+  transition-delay: 0.4s;
+  color: aliceblue;
+}
+
+/* Media Queries para pantallas pequeñas */
+@media (max-width: 768px) {
   .footer-container {
-    display: flex;
-    flex-wrap: wrap; /* Permite que los elementos se ajusten en pantallas pequeñas */
-    justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+    flex-direction: column;
+    /* Las columnas se apilan en pantallas pequeñas */
+    align-items: center;
   }
-  
+
   .footer-column {
-    flex: 1;
-    margin: 20px;
-    min-width: 200px;
+    margin: 10px 0;
+    /* Menos margen en pantallas pequeñas */
+    min-width: 100%;
+    /* Las columnas ocuparán todo el ancho disponible */
   }
-  
-  .footer-title {
-    font-size: 18px;
-    margin-bottom: 15px;
-    color: #ffffff; /* Texto blanco */
-    border-bottom: 2px solid #d4af37; /* Subrayado dorado */
-    display: inline-block;
-  }
-  
-  .footer-text {
-    color: #ffffff; /* Texto blanco */
-    margin: 0;
-    font-size: 14px;
-  }
-  
+
   .footer-links {
-    display: flex;
-    flex-direction: column; /* Coloca los enlaces en una columna para pantallas pequeñas */
-    gap: 10px; /* Espacio entre los enlaces */
+    gap: 5px;
+    /* Menos espacio entre los enlaces en pantallas pequeñas */
+    flex-direction: column;
+    /* Coloca los enlaces en columna en pantallas pequeñas */
   }
-  
-  .footer-link {
-    color: #ffffff; /* Texto blanco */
-    text-decoration: none;
-    transition: color 0.3s ease;
+
+  .footer-title {
+    font-size: 16px;
+    /* Tamaño de fuente más pequeño en pantallas pequeñas */
   }
-  
-  .footer-link:hover {
-    color: #d4af37; /* Color dorado al pasar el mouse */
-  }
-  
+
   .footer-bottom {
-    border-top: 1px solid #d4af37; /* Línea dorada */
-    padding: 20px 0;
-    text-align: center;
-    margin-top: 20px;
+    font-size: 12px;
+    /* Texto más pequeño en el pie de página */
   }
-  
-  .footer-bottom-text {
-    color: #ffffff;
-    font-size: 14px;
-    margin: 0;
-  }
-  
-  /* Estilo del botón cerrar sesión */
-  .btn {
-    font-size: 13px;
-    background: transparent;
-    border: none;
-    padding: 1em 1.5em;
-    color: #fffffe;
-    text-transform: uppercase;
-    position: relative;
-    transition: 0.5s ease;
-    cursor: pointer;
-  }
-  
-  .btn::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 2px;
-    width: 0;
-    background-color: #ffc506;
-    transition: 0.5s ease;
-  }
-  
-  .btn:hover {
-    color: #ddbd4a;
-    transition-delay: 0.5s;
-  }
-  
-  .btn:hover::before {
-    width: 100%;
-  }
-  
-  .btn::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 0;
-    width: 100%;
-    background-color: #ffc506;
-    transition: 0.4s ease;
-    z-index: -1;
-  }
-  
-  .btn:hover::after {
-    height: 90%;
-    transition-delay: 0.4s;
-    color: aliceblue;
-  }
-  
-  /* Media Queries para pantallas pequeñas */
-  @media (max-width: 768px) {
-    .footer-container {
-      flex-direction: column; /* Las columnas se apilan en pantallas pequeñas */
-      align-items: center;
-    }
-  
-    .footer-column {
-      margin: 10px 0; /* Menos margen en pantallas pequeñas */
-      min-width: 100%; /* Las columnas ocuparán todo el ancho disponible */
-    }
-  
-    .footer-links {
-      gap: 5px; /* Menos espacio entre los enlaces en pantallas pequeñas */
-      flex-direction: column; /* Coloca los enlaces en columna en pantallas pequeñas */
-    }
-  
-    .footer-title {
-      font-size: 16px; /* Tamaño de fuente más pequeño en pantallas pequeñas */
-    }
-  
-    .footer-bottom {
-      font-size: 12px; /* Texto más pequeño en el pie de página */
-    }
-  }
-  
+}
+
+.footer-column-logo {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Espaciado entre el logo y el texto */
+}
+
+.footer-logo {
+  width: 130px; /* Ajusta el tamaño del logo */
+  height: auto; /* Mantén la proporción */
+  border-radius: 50%;
+}

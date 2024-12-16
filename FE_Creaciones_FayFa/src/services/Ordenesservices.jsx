@@ -40,3 +40,22 @@ export const createOrder = async (cartData) => {
         throw error;
     }
 };
+
+//limpiar el carrito
+export const clearCart = async () => {
+    try {
+        const token = sessionStorage.getItem("access_token");
+        const response = await fetch("http://127.0.0.1:8000/api/cartClear/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error("Error al vaciar el carrito.");
+        }
+    } catch (error) {
+        console.error("Error en clearCart:", error.message);
+    }
+};
