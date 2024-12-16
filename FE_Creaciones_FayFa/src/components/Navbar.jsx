@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useNavigate } from "react";
+import React, { useState, useEffect } from "react";
 import { Navbar, Nav, Container, Dropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -8,12 +8,7 @@ import { fetchUserData } from "../services/GetUserNavbar";
 function CustomNavbar() {
   const [cartCount, setCartCount] = useState(0);
   const [user, setUser] = useState(null);  // Para almacenar los datos del usuario
-  const navigate = useNavigate();
 
-  const salir = () => {
-    // Redirigir a la página de login
-    navigate('/');
-  };
   
   // Obtener la información del carrito
   const getCartData = async () => {
@@ -132,7 +127,7 @@ function CustomNavbar() {
                   </Dropdown.Header>
                   <Dropdown.Divider />
                   <Dropdown.Item href="/pedidos">Pedidos</Dropdown.Item>
-                  <Dropdown.Item className="text-danger" onClick={salir}>
+                  <Dropdown.Item href="/logout" className="text-danger">
                     Logout
                   </Dropdown.Item>
                 </Dropdown.Menu>
