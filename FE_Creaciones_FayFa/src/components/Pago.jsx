@@ -82,14 +82,16 @@ const PaymentPage = () => {
                     provincia
                 );
                 Swal.fire("Dirección guardada con éxito!");
-
-                navigate('/Segundopaso')
             } catch (error) {
                 console.error("Error guardando dirección:", error);
                 Swal.fire("Hubo un problema guardando la dirección.");
                 return;
             }
         }
+        if(formState.deliveryMethod === "delivery" || formState.deliveryMethod === "local"){
+            navigate('/Segundopaso')
+        } 
+
        
     };
 

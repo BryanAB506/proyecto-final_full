@@ -11,14 +11,14 @@ export default function PaginaSegundoMetodo() {
     // const [paymentMethod, setPaymentMethod] = useState("");
     const [metodo_pago, setMetodo_pago] = useState("");
     const [Ordenes, setOrdenes_id] = useState("");
-    const [comprobante_pago, setComprobante_pago] = useState(null);
+    const [comprobante_pago, setComprobante_pago] = useState('sin comprobante');
 
     const { logout, setNuevoProducto } = useContext(FayFaContext);
 
     const cargarMetodo = (e) => {
+         // setPaymentMethod(selectedMethod); // Esto asegura que el estado 'paymentMethod' se actualiza correctamente
         const selectedMethod = e.target.value;
         setMetodo_pago(selectedMethod);
-        // setPaymentMethod(selectedMethod); // Esto asegura que el estado `paymentMethod` se actualiza correctamente
     };
 
     console.log('ESTO CONTIENE METODO DE PAGO', metodo_pago);
@@ -37,47 +37,32 @@ export default function PaginaSegundoMetodo() {
 
     // Función que se ejecuta cuando se envía el formulario
     const cargarComprobantes_pago = async (e) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        // // Validacion
-        // if (!metodo_pago || !comprobante_pago) {
-        //     Swal.fire("Error", "Por favor complete todos los campos.", "error");
-        //     return;
-        // }
+    // Validación: solo se valida el comprobante si el método de pago es "sinpe"
+    if (!metodo_pago || (metodo_pago === "sinpe" && !comprobante_pago)) {
+        Swal.fire("Error", "Por favor complete todos los campos.", "error");
+        return;
+    }
 
-        try {
-            // Aquí enviarías la solicitud POST a tu backend
-            // const formData = new FormData();
-            // formData.append("metodo_pago", metodo_pago);
-            // formData.append("comprobante_pago", comprobante_pago);
-            // formData.append("Ordenes", Ordenes);
+    try {
+       
+        console.log('Datos a enviar:', {
+            ordenId: Ordenes,
+            metodo_pago,
+            comprobante_pago
+        });
 
-            // console.log('FORMDATA',formData);
-            
+        await posComprobantePago(Ordenes, metodo_pago, comprobante_pago);
+        
+        // Mostrar mensaje de éxito
+        Swal.fire("Comprobante leído con éxito.");
+    } catch (error) {
+        console.error("Error al agregar el comprobante:", error);
+        Swal.fire("Hubo un error al agregar el comprobante", "", "error");
+    }
+};
 
-            // Dependiendo del método de pago seleccionado, aplicar lógica específica
-            if (metodo_pago === "local") {
-                setMetodo_pago("retiro en local");
-                setComprobante_pago('Retira en el local')
-            } else if (metodo_pago === "sinpe") {
-                setMetodo_pago("sinpe móvil");
-            }
-
-            console.log('Datos a enviar:', {
-                ordenId: Ordenes,
-                metodo_pago,
-                comprobante_pago
-            });
-
-            await posComprobantePago(Ordenes, metodo_pago, comprobante_pago);
-            
-            // Mostrar mensaje de éxito
-            Swal.fire("Comprobante leído con éxito.");
-        } catch (error) {
-            console.error("Error al agregar el comprobante:", error);
-            Swal.fire("Hubo un error al agregar el comprobante", "", "error");
-        }
-    };
 
 
     const [productos, setProductos] = useState([]);
@@ -167,7 +152,7 @@ export default function PaginaSegundoMetodo() {
                             <Form.Control
                                 type="file"
                                 onChange={CargarImagen}
-                                required
+                                required={metodo_pago === "sinpe"} // Hacer obligatorio solo cuando el método es "sinpe"
                             />
                         </Form.Group>
                     </div>
