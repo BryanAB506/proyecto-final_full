@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 
 const Usuarios = () => {
   const [users, setUsers] = useState([]);
-  const [search, setSearch] = useState(""); 
+  const [search, setSearch] = useState("");
 
   const navigate = useNavigate();
 
@@ -42,15 +42,15 @@ const Usuarios = () => {
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
     });
-  
+
     if (result.isConfirmed) {
       try {
         // Llamar a la función para eliminar el usuario
         await deleteUser(userId);
-  
+
         // Actualizar el estado eliminando al usuario
         setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
-  
+
         // Mostrar un mensaje de éxito
         Swal.fire("¡Eliminado!", "El usuario ha sido eliminado.", "success");
       } catch (error) {
@@ -60,9 +60,9 @@ const Usuarios = () => {
       }
     }
   };
-  
-  
-  
+
+
+
   return (
     <Container>
       <h2 className="my-4">Usuarios</h2>

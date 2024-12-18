@@ -17,6 +17,7 @@ import UserP from '../page/Users';
 import { AuthProvider } from '../Context/AuthContext';
 import GetClienteId from '../components/decodificarToken';
 import SugundoPaso from '../page/SugundoPaso';
+import Perfil from '../page/Cuenta';
 
 export default function Routing() {
   return (
@@ -37,6 +38,7 @@ export default function Routing() {
           <Route path='/pago' element={<PaymentPage />} />
           <Route path='/Segundopaso' element={< SugundoPaso/>} />
           <Route path='/usuarios' element={<UserP />} />
+          <Route path='/perfil' element={<Perfil />} />
 
           <Route path='/token' element={<GetClienteId />} />
 
