@@ -138,8 +138,9 @@ const ListaPedidos = () => {
                     return (
                         <Accordion.Item eventKey={index.toString()} key={pedido.id}>
                             <Accordion.Header>
-                                ID Pedido: {pedido.id} | Cliente: {pedido.usuario_nombre} | Fecha del Pedido: {new Date(pedido.fecha_orden).toLocaleDateString()} | Estado: {pedido.estado}
+                                ID Pedido: {pedido.id} | Cliente: {pedido.usuario_nombre} {pedido.usuario_apellido} | Fecha del Pedido: {new Date(pedido.fecha_orden).toLocaleDateString()} | Estado: {pedido.estado}
                             </Accordion.Header>
+
                             <Accordion.Body>
                                 <h5>Detalles del Pedido</h5>
                                 <p><strong>Correo del Usuario:</strong> {pedido.email}</p>
