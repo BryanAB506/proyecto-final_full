@@ -109,7 +109,7 @@ export const UsuarioPerfil = () => {
 
     const handleAddressEdit = (direccion) => {
         setAddressData({
-            id: direccion.id, // Asegúrate de que este campo esté presente
+            id: direccion.id,
             provincia: direccion.provincia || "",
             Canton: direccion.Canton || "",
             Distrito: direccion.Distrito || "",
@@ -122,6 +122,53 @@ export const UsuarioPerfil = () => {
     const handleAddressInputChange = (e) => {
         const { name, value } = e.target;
         setAddressData((prevData) => ({ ...prevData, [name]: value }));
+    };
+
+    // Función para guardar cambios de usuario
+    const handleSaveUserChanges = async () => {
+        try {
+            const token = sessionStorage.getItem("access_token");
+            if (!token) {
+                Swal.fire({
+                    title: "Error",
+                    text: "No se encontró el token de acceso.",
+                    icon: "error",
+                });
+                return;
+            }
+
+            const response = await fetch(`http://127.0.0.1:8000/api/userUpdate/`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                Swal.fire({
+                    title: "¡Éxito!",
+                    text: "Tus datos han sido actualizados correctamente.",
+                    icon: "success",
+                });
+                handleCloseUserModal();
+                getUserData(); // Recargar los datos del usuario
+            } else {
+                const errorData = await response.json();
+                Swal.fire({
+                    title: "Error",
+                    text: `No se pudo actualizar los datos. Detalles: ${errorData.detail || "Error desconocido"}`,
+                    icon: "error",
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                title: "Error",
+                text: "Ocurrió un problema al guardar los datos.",
+                icon: "error",
+            });
+        }
     };
 
     const handleSaveAddressChanges = async () => {
@@ -143,7 +190,7 @@ export const UsuarioPerfil = () => {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    provincia: addressData.provincia, // Usar addressData
+                    provincia: addressData.provincia,
                     Canton: addressData.Canton,
                     Distrito: addressData.Distrito,
                     direccion: addressData.direccion,
@@ -268,6 +315,7 @@ export const UsuarioPerfil = () => {
                     </Button>
                     <Button
                         variant="primary"
+                        onClick={handleSaveUserChanges} // Cambiar a handleSaveUserChanges
                         style={{ backgroundColor: "#212529", borderColor: "#FF5733" }}
                     >
                         Guardar Cambios
