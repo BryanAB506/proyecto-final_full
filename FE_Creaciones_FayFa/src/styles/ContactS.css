@@ -144,3 +144,15 @@
     border-radius: 8px;
   }
   
+
+/* Mostrar por defecto */
+.ocultar-simbolo {
+  display: inline-block;
+}
+
+/* Ocultar a partir de 425px */
+@media (max-width: 760px) {
+  .ocultar-simbolo {
+    display: none;
+  }
+}
