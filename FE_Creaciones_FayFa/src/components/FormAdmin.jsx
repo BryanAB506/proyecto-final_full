@@ -104,6 +104,23 @@ export default function FormAdminC() {
 
   const cargarProductos = async (e) => {
     e.preventDefault();
+
+    // Validar que los campos no estén vacíos o contengan solo espacios
+    //trim(): Este método elimina los espacios en blanco al inicio y al final de una cadena. Si la cadena está vacía o solo contiene espacios, devolverá una cadena vacía.
+    if (
+      !nombre.trim() ||
+      !descripcion_producto.trim() ||
+      !precio.trim() ||
+      !stock.trim() ||
+      !selectedCategoria.trim() ||
+      !imagen_product
+    ) {
+      Swal.fire("Error", "Todos los campos son obligatorios y no pueden contener solo espacios.", "error");
+      return;
+    }
+
+
+
     try {
       const productoAgregado = await postProductos(nombre, descripcion_producto, precio, stock, selectedCategoria, imagen_product);
       setNuevoProducto(productoAgregado)
@@ -364,17 +381,17 @@ export default function FormAdminC() {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" style={{
-                  backgroundColor: "#212529",
-                  borderColor: "#FF5733",
-                  margin: "10px",
-                }} onClick={() => setShowEditModal(false)}>
+            backgroundColor: "#212529",
+            borderColor: "#FF5733",
+            margin: "10px",
+          }} onClick={() => setShowEditModal(false)}>
             Cancelar
           </Button>
           <Button variant="primary" style={{
-                  backgroundColor: "#212529",
-                  borderColor: "#FF5733",
-                  margin: "10px",
-                }} onClick={saveCategoriaEditada}>
+            backgroundColor: "#212529",
+            borderColor: "#FF5733",
+            margin: "10px",
+          }} onClick={saveCategoriaEditada}>
             Guardar Cambios
           </Button>
         </Modal.Footer>

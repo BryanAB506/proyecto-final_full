@@ -21,10 +21,6 @@ def validate_email (self, value):
             raise serializers.ValidationError("Ya existe un correo registrado con este email.")
         return value
 
-
-     
-
-
 class Direcciones_envioSerializer(serializers.ModelSerializer):
     email_usuario = serializers.CharField(source='Usuarios.email', read_only=True)  # Obtener el email del usuario asociado
 
