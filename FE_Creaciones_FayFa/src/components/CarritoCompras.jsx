@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Card, Button, ListGroup } from "react-bootstrap";
-import { fetchCartItems, addToCart, removeFromCart } from "../services/carritoservices"; // Ajusta la ruta según tu estructura
+import { fetchCartItems, addToCart, removeFromCart } from "../services/carritoservices";
 import { createOrder, fetchCartItemsA } from "../services/Ordenesservices";
 
 const ShoppingCart = () => {
@@ -49,7 +49,7 @@ const ShoppingCart = () => {
 
     const calculateSubtotal = () => {
         return cartItems
-            .reduce((acc, item) => acc + item.product_price * item.quantity, 0)  // Usar 'product_price' en lugar de 'price'
+            .reduce((acc, item) => acc + item.product_price * item.quantity, 0)
             .toFixed(2);  // Formato con dos decimales
     };
     

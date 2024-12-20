@@ -48,15 +48,16 @@ function ContactPage() {
         {/* Íconos y opciones */}
         <Row className="text-center align-items-center">
           <Col md={4}>
-            <Image src={simbolo} alt="Ícono 1" fluid />
+            <Image className="ocultar-simbolo" src={simbolo} alt="Ícono 1" fluid />
           </Col>
           <Col md={4}>
-            <Image src={simbolo} alt="Ícono 2" fluid />
+            <Image className="ocultar-simbolo" src={simbolo} alt="Ícono 2" fluid />
           </Col>
           <Col md={4}>
-            <Image src={simbolo} alt="Ícono 3" fluid />
+            <Image className="ocultar-simbolo" src={simbolo} alt="Ícono 3" fluid />
           </Col>
         </Row>
+
 
         <Row className="mt-4 text-center">
           <Col>
@@ -101,10 +102,10 @@ function ContactPage() {
               </Form.Group>
 
               <Button variant="primary" type="submit" className="w-100" style={{
-              backgroundColor: "#212529",
-              borderColor: "#FF5733",
-              margin: "10px",
-            }}>
+                backgroundColor: "#212529",
+                borderColor: "#FF5733",
+                margin: "10px",
+              }}>
                 Enviar
               </Button>
             </Form>
