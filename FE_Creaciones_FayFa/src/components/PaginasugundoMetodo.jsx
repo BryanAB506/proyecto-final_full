@@ -4,7 +4,8 @@ import FayFaContext from "../Context/FayFaContext";
 import posComprobantePago from "../services/PostComprovantePagos";
 import { UploadFile } from '../firebase/Config'
 import getOrden from "../services/GetPago";
-import Swal from 'sweetalert2';  // Importación de SweetAlert
+import Swal from 'sweetalert2';
+import { useNavigate } from "react-router-dom"; 
 import '../styles/Segundopaso.css';
 
 export default function PaginaSegundoMetodo() {
@@ -14,6 +15,7 @@ export default function PaginaSegundoMetodo() {
     const [comprobante_pago, setComprobante_pago] = useState('sin comprobante');
 
     const { logout, setNuevoProducto } = useContext(FayFaContext);
+    const navigate = useNavigate(); 
 
     const cargarMetodo = (e) => {
          // setPaymentMethod(selectedMethod); // Esto asegura que el estado 'paymentMethod' se actualiza correctamente
@@ -56,7 +58,11 @@ export default function PaginaSegundoMetodo() {
         await posComprobantePago(Ordenes, metodo_pago, comprobante_pago);
         
         // Mostrar mensaje de éxito
-        Swal.fire("Comprobante leído con éxito.");
+        Swal.fire("Comprobante leído con éxito.").then(() => {
+            navigate("/productos");
+        });
+
+
     } catch (error) {
         console.error("Error al agregar el comprobante:", error);
         Swal.fire("Hubo un error al agregar el comprobante", "", "error");

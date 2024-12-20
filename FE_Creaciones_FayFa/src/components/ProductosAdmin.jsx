@@ -2,9 +2,10 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Modal, Form } from 'react-bootstrap';
 import '../styles/AdminPage.css';
 import FayFaContext from '../Context/FayFaContext';
+import { eliminarProductoApi } from '../services/DeleteProductos';
 
 function ProductosAdm() {
-    const { productos, eliminarProducto, editarProducto } = useContext(FayFaContext);
+    const { productos, editarProducto, fetchProductos} = useContext(FayFaContext);
 
     const [showModal, setShowModal] = useState(false); // Controlar la visibilidad del modal
     const [productoEditado, setProductoEditado] = useState(null); // Almacenar el producto a editar
@@ -54,6 +55,24 @@ function ProductosAdm() {
         }
     };
     
+    const eliminarProducto = async (id) => {
+        const confirmar = window.confirm("¿Estás seguro de que deseas eliminar este producto?");
+        if (!confirmar) return;
+    
+        try {
+         
+          const success = await eliminarProductoApi(id);
+          fetchProductos()
+                    
+          if (success) {
+            alert("Producto eliminado correctamente.");
+          } else {
+            alert("Hubo un error al intentar eliminar el producto.");
+          }
+        } catch (error) {
+          alert("Error eliminando el producto.");
+        }
+      };
 
 
     return (

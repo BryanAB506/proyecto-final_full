@@ -1,8 +1,21 @@
-import Card from 'react-bootstrap/Card';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
+import { getProductos } from '../services/GetProductos';
+import React, { useEffect, useState, } from 'react';
+import { Row, Col, Card } from "react-bootstrap";
 
 function Dest() {
+
+  const [productos, setProductos] = useState([])
+
+
+  async function datosProductos() {
+    const datos = await getProductos()
+    setProductos(datos)
+  }
+  useEffect(() => {
+    datosProductos()
+  }, [])
+
+
   return (
     <Row xs={2} md={3} id='cartas'>
       {Array.from({ length: 6 }).map((_, idx) => (
