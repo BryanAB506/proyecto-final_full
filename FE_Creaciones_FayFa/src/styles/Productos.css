@@ -1,6 +1,35 @@
 .tituloOurTeam {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+/* Estilo para la lista de categorías */
+.category-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.category-item {
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Estilo para el item de categoría cuando está seleccionado */
+.category-item.selected {
+  background-color: #666666;
+  color: #fff;
+}
+
+/* Estilo para el item de categoría cuando está en hover */
+.category-item:hover {
+  background-color: #cfcfcf;
+}
+
+/* Estilo para el primer item "Todas" */
+.category-item-all {
+  background-color: #e9ecef;
+}

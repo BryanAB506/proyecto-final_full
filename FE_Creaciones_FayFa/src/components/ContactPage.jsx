@@ -82,9 +82,11 @@ function ContactPage() {
       </Container>
 
       {/* Formulario */}
+      
       <Container className="mt-5">
         <Row>
           <Col md={{ span: 8, offset: 2 }}>
+          <h1>Formulario de contacto</h1><br />
             <Form ref={form} onSubmit={sendEmail}>
               <Form.Group className="mb-3">
                 <Form.Label>Nombre completo</Form.Label>

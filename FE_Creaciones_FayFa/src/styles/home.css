@@ -139,3 +139,35 @@
 .mt-30 {
   margin-top: 60px;
 }
+
+/* Estilo para la columna del texto */
+#titulo1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+#texto2 {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #555;
+  text-align: justify;
+}
+
+/* Ajustes generales para el contenedor */
+.contSobresalir {
+  padding: 3rem 1.5rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.sobresalir {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.web {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
