@@ -41,6 +41,7 @@ Una plataforma digital diseñada para exhibir prendas de manera profesional y ac
 ## Frontend
 
 - React.js: Biblioteca para la construcción de interfaces de usuario.
+- ReactBootstrap
 - CSS: Estilización de componentes.
 
 ## Otros

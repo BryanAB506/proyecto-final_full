@@ -9,7 +9,7 @@ function Dest() {
   async function datosProductos() {
     try {
       const datos = await getProductos();
-      const productosHoodie = datos.filter(producto => producto.nombre_categoria.toLowerCase() === "hoodie");
+      const productosHoodie = datos.filter(producto => producto.nombre_categoria.toLowerCase() === "destacados");
       setProductos(productosHoodie);
     } catch (error) {
       console.error("Error al obtener productos:", error);
