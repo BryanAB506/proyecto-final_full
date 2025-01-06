@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import getCategorias from '../services/GetCategorias';
 import { getProductos } from '../services/GetProductos';
 import FayFaContext from "../Context/FayFaContext";
-import '../styles/Productos.css';
+import '../styles/Productos.css'; // Asegúrate de importar el CSS
 import { addToCart } from '../services/carritoservices';
 import Swal from 'sweetalert2'
 
@@ -11,6 +11,7 @@ function Productos() {
     const [categorias, setCategorias] = useState([]);
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
     const [busqueda, setBusqueda] = useState("");
+
     // Función para obtener categorías
     async function cargarCategorias() {
         try {
@@ -26,13 +27,8 @@ function Productos() {
         cargarCategorias();
     }, []);
 
-
-
-
-
-
-
     const { productos, setNuevoProducto } = useContext(FayFaContext);
+
     // useEffect para cargar los productos al montar el componente
     useEffect(() => {
         const fetchProductos = async () => {
@@ -46,13 +42,7 @@ function Productos() {
         fetchProductos();
     }, []);
 
-
-
-
-
-
     const [loading, setLoading] = useState(false);
-
 
     const agregarAlCarrito = async (producto) => {
         setLoading(true); // Mostrar "Agregando..." en el botón
@@ -68,16 +58,14 @@ function Productos() {
         }
     }
 
-
-
     // Manejo del campo de búsqueda
     const handleBusquedaChange = (event) => {
         setBusqueda(event.target.value);
     };
 
     // Manejo del filtro de categoría
-    const handleCategoriaChange = (event) => {
-        setCategoriaSeleccionada(event.target.value);
+    const handleCategoriaSeleccionada = (categoria) => {
+        setCategoriaSeleccionada(categoria);
     };
 
     // Filtrar productos según la búsqueda y la categoría seleccionada
@@ -86,10 +74,6 @@ function Productos() {
         const coincideCategoria = categoriaSeleccionada ? producto.nombre_categoria === categoriaSeleccionada : true;
         return coincideBusqueda && coincideCategoria;
     });
-
-
-
-
 
     return (
         <div>
@@ -103,51 +87,41 @@ function Productos() {
                     value={busqueda}
                     onChange={handleBusquedaChange}
                 />
-
             </Form>
             <Container fluid>
                 <Row>
                     {/* Sidebar para filtros */}
                     <Col
                         md={3} className="p-3" style={{
-                            backgroundColor: "rgb(201 201 201)", // Fondo oscuro
+                            backgroundColor: "rgb(226 226 226)", // Fondo oscuro
                             color: "rgb(0, 0, 0)",          // Texto claro
                             borderRadius: "5px",       // Bordes redondeados opcionales
                         }}
                     >
                         <h5>Filtros</h5>
-                        <Form>
-                            {/* Categorías como opciones en Género */}
-                            <Form.Group>
-                                <Form.Label>Categorías</Form.Label>
-                                <Form.Select name="category" value={categoriaSeleccionada} onChange={handleCategoriaChange}>
-                                    <option value="">Todas</option>
-                                    {categorias.map((categoria) => (
-                                        <option key={categoria.id} value={categoria.nombre_categoria}>
-                                            {categoria.nombre_categoria}
-                                        </option>
-                                    ))}
-                                </Form.Select>
-                            </Form.Group>
-
-                            {/* Descripciones como radio buttons en Colección */}
-                            <Form.Group className="mt-3">
-                                <Form.Label>Descripciones</Form.Label>
+                        <div>
+                            <h6>Categorías</h6>
+                            <ul className="category-list">
+                                <li 
+                                    onClick={() => handleCategoriaSeleccionada("")} 
+                                    className={`category-item ${categoriaSeleccionada === "" ? 'category-item-all' : ''}`}
+                                >
+                                    Todas
+                                </li>
                                 {categorias.map((categoria) => (
-                                    <Form.Check
+                                    <li
                                         key={categoria.id}
-                                        type="radio"
-                                        label={categoria.descripcion}
-                                        name="description"
-                                        value={categoria.descripcion}
-                                    />
+                                        onClick={() => handleCategoriaSeleccionada(categoria.nombre_categoria)}
+                                        className={`category-item ${categoriaSeleccionada === categoria.nombre_categoria ? 'selected' : ''}`}
+                                    >
+                                        {categoria.nombre_categoria}
+                                    </li>
                                 ))}
-                            </Form.Group>
-                        </Form>
+                            </ul>
+                        </div>
                     </Col>
 
                     {/* Main content */}
-
                     <Col md={9}>
                         <Row>
                             {productosFiltrados.map((producto) => (

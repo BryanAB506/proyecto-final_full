@@ -5,7 +5,7 @@ import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
 
 export default function FooterPage() {
   return (
-    <footer className="footer">
+    <footer className="footer" style={{ borderTop: '5px solid #D4AF37' }}>
       <div className="footer-container">
         {/* Columna 1: Logo y descripción */}
         <div className="footer-column">

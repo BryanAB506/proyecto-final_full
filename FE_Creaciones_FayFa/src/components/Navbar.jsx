@@ -12,13 +12,11 @@ function CustomNavbar() {
 
   const navigate = useNavigate();
 
-
   const salir = () => {
     // Redirigir a la página de login
     navigate('/');
   };
 
-  
   // Obtener la información del carrito
   const getCartData = async () => {
     try {
@@ -45,7 +43,6 @@ function CustomNavbar() {
     }
   };
 
-
   useEffect(() => {
     getCartData();
 
@@ -66,7 +63,7 @@ function CustomNavbar() {
   }, []); // Esto se ejecutará una vez cuando el componente se cargue
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" className="py-3">
+    <Navbar bg="dark" variant="dark" expand="lg" className="py-3" style={{ borderBottom: '5px solid #D4AF37' }}>
       <Container>
         <Navbar.Brand href="#" className="d-flex align-items-center">
           <img

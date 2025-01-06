@@ -1,79 +1,114 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Modal, Form } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 import '../styles/AdminPage.css';
 import FayFaContext from '../Context/FayFaContext';
-import { eliminarProductoApi } from '../services/DeleteProductos';
+import { eliminarProductoApi, editarProductoApi } from '../services/DeleteProductos';
 
 function ProductosAdm() {
-    const { productos, editarProducto, fetchProductos} = useContext(FayFaContext);
+    const { productos, fetchProductos } = useContext(FayFaContext);
 
-    const [showModal, setShowModal] = useState(false); // Controlar la visibilidad del modal
-    const [productoEditado, setProductoEditado] = useState(null); // Almacenar el producto a editar
+    const [showModal, setShowModal] = useState(false);
+    const [productoEditado, setProductoEditado] = useState(null);
     const [formData, setFormData] = useState({
         nombre: '',
         descripcion_producto: '',
         precio: '',
         stock: '',
-        Categorias: '',  // Agregado para incluir la categoría
-        imagen_product: '', // Agregado para incluir la URL de la imagen
+        Categorias: '',
+        imagen_product: '',
     });
 
     const handleCloseModal = () => setShowModal(false);
     const handleShowModal = (producto) => {
-        setProductoEditado(producto); // Establecer el producto a editar
+        setProductoEditado(producto);
         setFormData({
             nombre: producto.nombre,
             descripcion_producto: producto.descripcion_producto,
             precio: producto.precio,
             stock: producto.stock,
-            Categorias: producto.Categorias,  // Establecer la categoría seleccionada
-            imagen_product: producto.imagen_product, // Establecer la URL de la imagen
+            Categorias: producto.Categorias,
+            imagen_product: producto.imagen_product,
         });
         setShowModal(true);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
-        // Revisar si los valores no son arrays antes de enviarlos
+
         const data = {
-            nombre: formData.nombre ? formData.nombre[0] : formData.nombre, // Verifica si es un array
-            descripcion_producto: formData.descripcion_producto ? formData.descripcion_producto[0] : formData.descripcion_producto,
-            precio: formData.precio ? parseFloat(formData.precio) : 0,
-            stock: formData.stock ? parseInt(formData.stock) : 0,
-            Categorias: formData.Categorias ? formData.Categorias : 0,  // Solo el ID de la categoría
-            imagen_product: formData.imagen_product, // La URL de la imagen
+            nombre: formData.nombre,
+            descripcion_producto: formData.descripcion_producto,
+            precio: parseFloat(formData.precio) || 0,
+            stock: parseInt(formData.stock) || 0,
+            Categorias: formData.Categorias,
+            imagen_product: formData.imagen_product,
         };
-    
-       
-    
+
         try {
-            await editarProducto(productoEditado.id, data);
-            handleCloseModal(); // Cerrar el modal después de editar
+            const success = await editarProductoApi(productoEditado.id, data);
+            if (success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Producto editado correctamente',
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                fetchProductos();
+                handleCloseModal();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hubo un error al intentar editar el producto',
+                });
+            }
         } catch (error) {
             console.error('Error al editar el producto:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al editar el producto',
+            });
         }
     };
-    
-    const eliminarProducto = async (id) => {
-        const confirmar = window.confirm("¿Estás seguro de que deseas eliminar este producto?");
-        if (!confirmar) return;
-    
-        try {
-         
-          const success = await eliminarProductoApi(id);
-          fetchProductos()
-                    
-          if (success) {
-            alert("Producto eliminado correctamente.");
-          } else {
-            alert("Hubo un error al intentar eliminar el producto.");
-          }
-        } catch (error) {
-          alert("Error eliminando el producto.");
-        }
-      };
 
+    const eliminarProducto = async (id) => {
+        const { isConfirmed } = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¡Esta acción no se puede deshacer!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+        });
+
+        if (!isConfirmed) return;
+
+        try {
+            const success = await eliminarProductoApi(id);
+            if (success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Producto eliminado correctamente',
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                fetchProductos();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hubo un error al intentar eliminar el producto',
+                });
+            }
+        } catch (error) {
+            console.error('Error eliminando el producto:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error eliminando el producto',
+            });
+        }
+    };
 
     return (
         <div>
@@ -99,7 +134,7 @@ function ProductosAdm() {
                                             <strong>Stock:</strong> {producto.stock}
                                         </Card.Text>
                                         <Card.Text>
-                                            <strong>Categoría:</strong> {producto.Categorias}
+                                            <strong>Categoría:</strong> {producto.nombre_categoria}
                                         </Card.Text>
 
                                         <div className="d-flex justify-content-between">
@@ -107,7 +142,7 @@ function ProductosAdm() {
                                                 variant="primary"
                                                 size="sm"
                                                 style={{ backgroundColor: "#212529" }}
-                                                onClick={() => handleShowModal(producto)} // Abrir el modal para editar
+                                                onClick={() => handleShowModal(producto)}
                                             >
                                                 Editar
                                             </Button>
@@ -128,7 +163,6 @@ function ProductosAdm() {
                 </Col>
             </Container>
 
-            {/* Modal para editar producto */}
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Editar Producto</Modal.Title>
@@ -144,7 +178,6 @@ function ProductosAdm() {
                                 onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                             />
                         </Form.Group>
-
                         <Form.Group controlId="formDescripcion">
                             <Form.Label>Descripción</Form.Label>
                             <Form.Control
@@ -154,7 +187,6 @@ function ProductosAdm() {
                                 onChange={(e) => setFormData({ ...formData, descripcion_producto: e.target.value })}
                             />
                         </Form.Group>
-
                         <Form.Group controlId="formPrecio">
                             <Form.Label>Precio</Form.Label>
                             <Form.Control
@@ -164,7 +196,6 @@ function ProductosAdm() {
                                 onChange={(e) => setFormData({ ...formData, precio: e.target.value })}
                             />
                         </Form.Group>
-
                         <Form.Group controlId="formStock">
                             <Form.Label>Stock</Form.Label>
                             <Form.Control
@@ -174,8 +205,6 @@ function ProductosAdm() {
                                 onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
                             />
                         </Form.Group>
-
-                        {/* Campo para seleccionar categoría */}
                         <Form.Group controlId="formCategoria">
                             <Form.Label>Categoría</Form.Label>
                             <Form.Control
@@ -185,8 +214,6 @@ function ProductosAdm() {
                                 onChange={(e) => setFormData({ ...formData, Categorias: e.target.value })}
                             />
                         </Form.Group>
-
-                        {/* Campo para la URL de la imagen */}
                         <Form.Group controlId="formImagen">
                             <Form.Label>Imagen</Form.Label>
                             <Form.Control
@@ -196,7 +223,6 @@ function ProductosAdm() {
                                 onChange={(e) => setFormData({ ...formData, imagen_product: e.target.value })}
                             />
                         </Form.Group>
-
                         <div className="d-flex justify-content-between">
                             <Button variant="secondary" onClick={handleCloseModal}>
                                 Cancelar

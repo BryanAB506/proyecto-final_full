@@ -13,9 +13,9 @@ const Expect = () => {
                             <Card className="text-center shadow-sm h-100 ">
                                 <Card.Body>
                                     <div className="icone">📊</div>
-                                    <Card.Title>Efficiency</Card.Title>
+                                    <Card.Title>Calidad</Card.Title>
                                     <Card.Text>
-                                        How to deal with the problems in the front of the Ministry and how many samples are given
+                                        Prendas confeccionadas con los mejores materiales y atención a cada detalle, asegurando una experiencia única.
                                     </Card.Text>
                                 </Card.Body>
                             </Card>
@@ -24,9 +24,9 @@ const Expect = () => {
                             <Card className="text-center shadow-sm h-100 mt-30">
                                 <Card.Body>
                                     <div className="icone">🧠</div>
-                                    <Card.Title>Intelligence</Card.Title>
+                                    <Card.Title>Personalización</Card.Title>
                                     <Card.Text>
-                                        How to deal with the problems in the front of the Ministry and how many samples are given
+                                        Cada cliente es único, por eso adaptamos cada prenda a tus necesidades y estilo personal.
                                     </Card.Text>
                                 </Card.Body>
                             </Card>
@@ -35,9 +35,9 @@ const Expect = () => {
                             <Card className="text-center shadow-sm h-100 ">
                                 <Card.Body>
                                     <div className="icone">🔺</div>
-                                    <Card.Title>Stable</Card.Title>
+                                    <Card.Title>Confianza</Card.Title>
                                     <Card.Text>
-                                        How to deal with the problems in the front of the Ministry and how many samples are given
+                                        Más de 10 años creando trajes y prendas con la precisión y el arte de la sastrería clásica.
                                     </Card.Text>
                                 </Card.Body>
                             </Card>
@@ -46,9 +46,9 @@ const Expect = () => {
                             <Card className="text-center shadow-sm h-100 mt-30">
                                 <Card.Body>
                                     <div className="icone">📊</div>
-                                    <Card.Title>Efficiency</Card.Title>
+                                    <Card.Title>Innovación</Card.Title>
                                     <Card.Text>
-                                        How to deal with the problems in the front of the Ministry and how many samples are given
+                                        Combinamos técnicas tradicionales con diseños contemporáneos para una apariencia sofisticada.
                                     </Card.Text>
                                 </Card.Body>
                             </Card>
@@ -59,9 +59,9 @@ const Expect = () => {
                 {/* Texto a la derecha */}
                 <Col lg={4}>
                     <div className="text-expect text-center text-lg-start">
-                        <h2>Internet products full of expectation</h2>
+                        <h2>Comprometidos con tu estilo</h2>
                         <p>
-                            The purpose of this paper is to find out what kind of medicine is to cure the disease, and to combine it with other things.
+                        Fusionamos calidad, personalización y confianza para brindarte productos que superen tus expectativas.
                         </p>
                     </div>
                 </Col>

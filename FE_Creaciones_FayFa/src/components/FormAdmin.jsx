@@ -256,7 +256,7 @@ export default function FormAdminC() {
                         borderColor: "#FF5733",
                         margin: "10px",
                       }}
-                      variant="warning"
+                      variant="primary"
                       size="sm"
                       className="me-2"
                       onClick={() => handleEditCategoria(categoria)}

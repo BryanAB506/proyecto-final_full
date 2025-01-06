@@ -1,32 +1,38 @@
 import { getProductos } from '../services/GetProductos';
-import React, { useEffect, useState, } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Card } from "react-bootstrap";
 
 function Dest() {
+  const [productos, setProductos] = useState([]);
 
-  const [productos, setProductos] = useState([])
-
-
+  // Función para cargar productos y filtrar por categoría "hoodie"
   async function datosProductos() {
-    const datos = await getProductos()
-    setProductos(datos)
+    try {
+      const datos = await getProductos();
+      const productosHoodie = datos.filter(producto => producto.nombre_categoria.toLowerCase() === "hoodie");
+      setProductos(productosHoodie);
+    } catch (error) {
+      console.error("Error al obtener productos:", error);
+    }
   }
-  useEffect(() => {
-    datosProductos()
-  }, [])
 
+  useEffect(() => {
+    datosProductos();
+  }, []);
 
   return (
-    <Row xs={2} md={3} id='cartas'>
-      {Array.from({ length: 6 }).map((_, idx) => (
-        <Col key={idx} className="d-flex justify-content-center">
+    <Row xs={2} md={3} id="cartas">
+      {productos.map((producto) => (
+        <Col key={producto.id} className="d-flex justify-content-center mb-4">
           <Card style={{ width: '21rem', height: 'auto' }}>
-            <Card.Img variant="top" src="src\assets\img\vestido.jpg" />
+            <Card.Img variant="top" src={producto.imagen_product || 'src/assets/img/default.jpg'} />
             <Card.Body>
-              <Card.Title>Card title</Card.Title>
+              <Card.Title>{producto.nombre}</Card.Title>
               <Card.Text>
-                This is a longer card with supporting text below as a natural
-                lead-in to additional content.
+                <strong>Descripción:</strong> {producto.descripcion_producto}
+              </Card.Text>
+              <Card.Text>
+                <strong>Precio:</strong> ₡{producto.precio}
               </Card.Text>
             </Card.Body>
           </Card>
