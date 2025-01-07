@@ -110,58 +110,117 @@ function ProductosAdm() {
         }
     };
 
+    // Filtrar productos destacados y no destacados
+    const productosDestacados = productos.filter(producto => producto.nombre_categoria === 'destacados');
+    const productosRestantes = productos.filter(producto => producto.nombre_categoria !== 'destacados');
+
     return (
         <div>
             <div className="tituloOurTeam">
                 <h2>PRODUCTOS</h2>
             </div><br />
-            <Container fluid>
-                <Col md={9}>
-                    <Row>
-                        {productos.map((producto) => (
-                            <Col key={producto.id} md={4} className="mb-4">
-                                <Card>
-                                    <Card.Img variant="top" src={producto.imagen_product || "src/assets/img/default.jpg"} />
-                                    <Card.Body>
-                                        <Card.Title>{producto.nombre}</Card.Title>
-                                        <Card.Text>
-                                            <strong>Descripción:</strong> {producto.descripcion_producto}
-                                        </Card.Text>
-                                        <Card.Text>
-                                            <strong>Precio:</strong> ₡{producto.precio}
-                                        </Card.Text>
-                                        <Card.Text>
-                                            <strong>Stock:</strong> {producto.stock}
-                                        </Card.Text>
-                                        <Card.Text>
-                                            <strong>Categoría:</strong> {producto.nombre_categoria}
-                                        </Card.Text>
 
-                                        <div className="d-flex justify-content-between">
-                                            <Button
-                                                variant="primary"
-                                                size="sm"
-                                                style={{ backgroundColor: "#212529" }}
-                                                onClick={() => handleShowModal(producto)}
-                                            >
-                                                Editar
-                                            </Button>
-                                            <Button
-                                                variant="danger"
-                                                size="sm"
-                                                style={{ backgroundColor: "#212529" }}
-                                                onClick={() => eliminarProducto(producto.id)}
-                                            >
-                                                Eliminar
-                                            </Button>
-                                        </div>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        ))}
-                    </Row>
-                </Col>
-            </Container>
+            {/* Sección de productos destacados */}
+            {productosDestacados.length > 0 && (
+                <div>
+                    <h3>Destacados</h3>
+                    <Container fluid>
+                        <Row>
+                            {productosDestacados.map((producto) => (
+                                <Col key={producto.id} md={4} className="mb-4">
+                                    <Card>
+                                        <Card.Img variant="top" src={producto.imagen_product || "src/assets/img/default.jpg"} />
+                                        <Card.Body>
+                                            <Card.Title>{producto.nombre}</Card.Title>
+                                            <Card.Text>
+                                                <strong>Descripción:</strong> {producto.descripcion_producto}
+                                            </Card.Text>
+                                            <Card.Text>
+                                                <strong>Precio:</strong> ₡{producto.precio}
+                                            </Card.Text>
+                                            <Card.Text>
+                                                <strong>Stock:</strong> {producto.stock}
+                                            </Card.Text>
+                                            <Card.Text>
+                                                <strong>Categoría:</strong> {producto.nombre_categoria}
+                                            </Card.Text>
+                                            <div className="d-flex justify-content-between">
+                                                <Button
+                                                    variant="primary"
+                                                    size="sm"
+                                                    style={{ backgroundColor: "#212529" }}
+                                                    onClick={() => handleShowModal(producto)}
+                                                >
+                                                    Editar
+                                                </Button>
+                                                <Button
+                                                    variant="danger"
+                                                    size="sm"
+                                                    style={{ backgroundColor: "#212529" }}
+                                                    onClick={() => eliminarProducto(producto.id)}
+                                                >
+                                                    Eliminar
+                                                </Button>
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            ))}
+                        </Row>
+                    </Container>
+                </div>
+            )}
+
+            {/* Sección de productos restantes */}
+            {productosRestantes.length > 0 && (
+                <div>
+                    <h3>Otros Productos</h3>
+                    <Container fluid>
+                        <Row>
+                            {productosRestantes.map((producto) => (
+                                <Col key={producto.id} md={4} className="mb-4">
+                                    <Card>
+                                        <Card.Img variant="top" src={producto.imagen_product || "src/assets/img/default.jpg"} />
+                                        <Card.Body>
+                                            <Card.Title>{producto.nombre}</Card.Title>
+                                            <Card.Text>
+                                                <strong>Descripción:</strong> {producto.descripcion_producto}
+                                            </Card.Text>
+                                            <Card.Text>
+                                                <strong>Precio:</strong> ₡{producto.precio}
+                                            </Card.Text>
+                                            <Card.Text>
+                                                <strong>Stock:</strong> {producto.stock}
+                                            </Card.Text>
+                                            <Card.Text>
+                                                <strong>Categoría:</strong> {producto.nombre_categoria}
+                                            </Card.Text>
+                                            <div className="d-flex justify-content-between">
+                                                <Button
+                                                    variant="primary"
+                                                    size="sm"
+                                                    style={{ backgroundColor: "#212529" }}
+                                                    onClick={() => handleShowModal(producto)}
+                                                >
+                                                    Editar
+                                                </Button>
+                                                <Button
+                                                    variant="danger"
+                                                    size="sm"
+                                                    style={{ backgroundColor: "#212529" }}
+                                                    onClick={() => eliminarProducto(producto.id)}
+                                                >
+                                                    Eliminar
+                                                </Button>
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            ))}
+                        </Row>
+                    </Container>
+                </div>
+            )}
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
@@ -169,6 +228,18 @@ function ProductosAdm() {
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
+                        {/* Mostrar imagen actual */}
+                        {formData.imagen_product && (
+                            <div className="mb-3">
+                                <Form.Label>Imagen Actual</Form.Label>
+                                <img
+                                    src={formData.imagen_product}
+                                    alt="Imagen del producto"
+                                    style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
+                                />
+                            </div>
+                        )}
+
                         <Form.Group controlId="formNombre">
                             <Form.Label>Nombre</Form.Label>
                             <Form.Control
@@ -234,6 +305,7 @@ function ProductosAdm() {
                     </Form>
                 </Modal.Body>
             </Modal>
+
         </div>
     );
 }
