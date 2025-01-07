@@ -23,13 +23,13 @@ export default function OurTeam() {
                     <Col md={8}>
                         <Card.Body>
                             <Card.Title className="fw-bold" style={{ fontSize: '3rem' }}>
-                                Pepita Ruiz
+                                Sofía Delgado
                             </Card.Title>
                             <Card.Subtitle className="mb-3 text-primary" style={{ fontSize: '22px' }}>
                                 Fundadora
                             </Card.Subtitle>
                             <Card.Text style={{ textAlign: 'justify', fontSize: '26px' }}>
-                                However, it's hard to get rid of all kinds of things, and it's difficult to pass on all kinds of articles. In the field of feixinshan, jiutuan people's films are very keen on thinking that people can increase their eyes to get the Dragon King's moon gone, and the small ones can't take any water to make noodles. It refers to the fact that during the period of Jiyun Festival...
+                                Bienvenidos a creaciones fayfa, donde cada prenda cuenta una historia. Soy Sofía Delgado, fundadora y apasionada por la moda que inspira confianza y celebra la autenticidad. Aquí encontrarás piezas únicas diseñadas para realzar tu estilo y acompañarte en cada momento especial de tu vida. Creemos en la calidad, la sostenibilidad y en empoderarte a través de lo que llevas puesto. ¡Gracias por ser parte de esta aventura!
                             </Card.Text>
                         </Card.Body>
                     </Col>

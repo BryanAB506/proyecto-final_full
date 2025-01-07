@@ -1,37 +1,36 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Form, Button, Container, Row, Col, Card } from "react-bootstrap"; 
 import getOrden from "../services/GetPago";
-import Swal from "sweetalert2";
-import FayFaContext from "../Context/FayFaContext";
-import '../styles/pagos.css'
-import GetClienteId from "./decodificarToken";
+import Swal from "sweetalert2"; 
+import FayFaContext from "../Context/FayFaContext"; 
+import '../styles/pagos.css'; 
+import GetClienteId from "./decodificarToken"; 
 import postDireccion from "../services/PostDireccion";
-import { useNavigate } from 'react-router-dom'
-
-
+import { useNavigate } from 'react-router-dom'; 
 
 
 const PaymentPage = () => {
+    // Obtiene el ID del usuario utilizando `GetClienteId`.
+    const user_id = GetClienteId();
+    console.log(user_id); // Imprime el ID del usuario en la consola para depuración.
+    const navigate = useNavigate(); 
 
-    const user_id = GetClienteId()
-    console.log(user_id)
-    const navigate = useNavigate ();
-
-
+    // Estado para almacenar los datos del formulario.
     const [formState, setFormState] = useState({
-        deliveryMethod: "",
-        paymentMethod: "",
-        addressDetails: {
+        deliveryMethod: "", // Método de entrega: "local" o "delivery".
+        paymentMethod: "", // Método de pago .
+        addressDetails: { // Detalles de la dirección para el método de entrega "delivery".
             direccion: "",
             provincia: "",
             canton: "",
             distrito: "",
             codigo_postal: "",
         },
-        paymentProof: null,
-        userId: user_id || "", // Asumiendo que incluye el ID del usuario
+        paymentProof: null, // Comprobante de pago .
+        userId: user_id || "", // Asigna el ID del usuario al formulario.
     });
 
+    // Función para manejar cambios en campos de formulario simples.
     const handleInputChange = (key, value) => {
         setFormState((prevState) => ({
             ...prevState,
@@ -39,6 +38,7 @@ const PaymentPage = () => {
         }));
     };
 
+    // Función para manejar cambios en los campos de la dirección.
     const handleAddressChange = (key, value) => {
         setFormState((prevState) => ({
             ...prevState,
@@ -49,29 +49,29 @@ const PaymentPage = () => {
         }));
     };
 
-  
-
+    // Maneja el envío del formulario.
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Evita la recarga de la página al enviar el formulario.
 
+        // Validación para el método de envío "delivery".
         if (formState.deliveryMethod === "delivery") {
             const { direccion, provincia, canton, distrito, codigo_postal } = formState.addressDetails;
 
+            // Asegúrate de que todos los campos de la dirección estén completos.
             if (!direccion || !provincia || !canton || !distrito || !codigo_postal) {
-                Swal.fire("Por favor, complete todos los campos de dirección.");
+                Swal.fire("Por favor, complete todos los campos de dirección."); // Muestra una alerta si faltan campos.
                 return;
             }
 
-            // Asegurarnos de que `Usuarios_id` esté disponible
+            // Verifica que el ID del usuario esté disponible.
             const Usuarios = user_id;
-
             if (!Usuarios) {
                 Swal.fire("No se encontró el ID del usuario. Por favor, inténtelo de nuevo.");
                 return;
             }
             console.log(Usuarios);
 
-            // Guardar dirección en la base de datos
+            // Guarda la dirección en la base de datos.
             try {
                 await postDireccion(
                     direccion,
@@ -81,41 +81,37 @@ const PaymentPage = () => {
                     distrito,
                     provincia
                 );
-                Swal.fire("Dirección guardada con éxito!");
+                Swal.fire("Dirección guardada con éxito!"); // Muestra una alerta de éxito.
             } catch (error) {
-                console.error("Error guardando dirección:", error);
-                Swal.fire("Hubo un problema guardando la dirección.");
+                console.error("Error guardando dirección:", error); // Imprime el error en la consola.
+                Swal.fire("Hubo un problema guardando la dirección."); // Muestra una alerta de error.
                 return;
             }
         }
-        if(formState.deliveryMethod === "delivery" || formState.deliveryMethod === "local"){
-            navigate('/Segundopaso')
-        } 
 
-       
+        // Redirige a la siguiente página si se seleccionó un método de entrega.
+        if (formState.deliveryMethod === "delivery" || formState.deliveryMethod === "local") {
+            navigate('/Segundopaso');
+        }
     };
 
-
-
+    // Estado para almacenar los productos de la orden.
     const [productos, setProductos] = useState([]);
-    // useEffect para cargar los productos al montar el componente
+
+    // Hook para cargar los productos al montar el componente.
     useEffect(() => {
         const fetchProductos = async () => {
             try {
                 console.log("Llamando a getOrden...");
-                const data = await getOrden();
+                const data = await getOrden(); // Llama al servicio para obtener los datos de la orden.
                 console.log("Datos recibidos:", data);
-                setProductos(data);
+                setProductos(data); // Almacena los datos en el estado.
             } catch (error) {
-                console.error('Error al obtener las órdenes:', error);
+                console.error('Error al obtener las órdenes:', error); // Imprime el error si ocurre.
             }
         };
-        fetchProductos();
-    }, []);
-
-
-
-
+        fetchProductos(); // Ejecuta la función.
+    }, []); // Se ejecuta solo una vez al montar el componente.
 
     return (
         <Container className="payment-container">
@@ -127,33 +123,24 @@ const PaymentPage = () => {
                     <Col key={producto.id} md={4} className="mb-4">
                         <h4>Resumen de la Orden</h4>
                         <Card className="p-3 border rounded">
-                            {/* Mostrar el nombre del usuario */}
                             <Card.Text>
                                 <strong>Usuario:</strong> {producto.usuario_nombre || "N/A"}
                             </Card.Text>
-
-                            {/* Mostrar la fecha de la orden */}
                             <Card.Text>
                                 <strong>Fecha de la Orden:</strong> {new Date(producto.fecha_orden).toLocaleDateString() || "N/A"}
                             </Card.Text>
-
-                            {/* Mostrar el estado de la orden */}
                             <Card.Text>
                                 <strong>Estado:</strong> {producto?.estado || "Pendiente"}
                             </Card.Text>
-
-                            {/* Mostrar el total */}
                             <Card.Text>
                                 <strong>Total:</strong> {`₡${producto?.total || "0.00"}`}
                             </Card.Text>
                         </Card>
                     </Col>
-
                 ))
             ) : (
-                <p>No hay órdenes disponibles.</p>
+                <p>No hay órdenes disponibles.</p> // Mensaje si no hay órdenes.
             )}
-
 
             {/* Formulario */}
             <Form onSubmit={handleSubmit}>
@@ -179,6 +166,7 @@ const PaymentPage = () => {
                 {formState.deliveryMethod === "delivery" && (
                     <div className="mt-3">
                         <h5>Detalles de Dirección</h5>
+                        {/* Campos de dirección */}
                         <Form.Group className="mb-3">
                             <Form.Label>Dirección</Form.Label>
                             <Form.Control
@@ -189,6 +177,7 @@ const PaymentPage = () => {
                             />
                         </Form.Group>
                         <Row>
+                            {/* Campos de Provincia, Cantón, Distrito y Código Postal */}
                             <Col>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Provincia</Form.Label>
@@ -236,7 +225,6 @@ const PaymentPage = () => {
                         </Row>
                     </div>
                 )}
-
                 
                 <Button id="botonCompra" type="submit" variant="primary" className="mt-4">
                     Completar Compra
@@ -246,4 +234,4 @@ const PaymentPage = () => {
     );
 };
 
-export default PaymentPage;
+export default PaymentPage; // Exporta el componente para su uso en otros archivos.
