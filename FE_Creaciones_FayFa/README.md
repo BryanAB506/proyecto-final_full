@@ -41,6 +41,7 @@ Una plataforma digital diseñada para exhibir prendas de manera profesional y ac
 ## Frontend
 
 - React.js: Biblioteca para la construcción de interfaces de usuario.
+- ReactBootstrap
 - CSS: Estilización de componentes.
 
 ## Otros
@@ -75,6 +76,5 @@ carrito de compras
 GET /api/productos/ Obtiene información de un productos.
 PUT /api/productos/ Actualiza información de un productos.
 DELETE /api/productos/ elimina información de un productos.
-
 
 

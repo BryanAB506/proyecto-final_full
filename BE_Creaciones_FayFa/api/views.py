@@ -72,6 +72,7 @@ def view_cart(request, section='default_section'):
     except CarritoDeCompras.DoesNotExist:
         return Response({'cart_id': None, 'cart_total': 0, 'cart_items': [], 'cart_count': 0}, status=200)
 
+#añade los productos a cartItem y crea el carrito si el usuario no tiene aun
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def add_to_cart(request, product_id, quantity, section='default_section'):
