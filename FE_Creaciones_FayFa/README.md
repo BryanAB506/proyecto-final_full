@@ -78,4 +78,3 @@ PUT /api/productos/ Actualiza información de un productos.
 DELETE /api/productos/ elimina información de un productos.
 
 
-

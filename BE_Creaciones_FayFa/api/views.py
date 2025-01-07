@@ -20,29 +20,22 @@ from .serializers import (
     RegistroSerializer, CartItemSerializer, UserSerializer
 )
 
-# Usuarios
+# User
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_users(request):
-    """
-    Vista para obtener una lista de todos los usuarios registrados.
-    Permite el acceso a cualquier usuario (autenticado o no).
-    """
     users = User.objects.all()
-    serializer = UserSerializer(users, many=True)
+    serializer = UserSerializer(users, many=True) 
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_user(request, pk):
-    """
-    Vista para eliminar un usuario específico por su ID.
-    Solo está disponible para usuarios autenticados.
-    """
     try:
         user = User.objects.get(pk=pk)
     except User.DoesNotExist:
         return Response({"detail": "Usuario no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+
     user.delete()
     return Response({"detail": "Usuario eliminado correctamente."}, status=status.HTTP_204_NO_CONTENT)
 
@@ -50,10 +43,6 @@ def delete_user(request, pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def view_cart(request, section='default_section'):
-    """
-    Muestra los detalles del carrito de compras del usuario autenticado.
-    Incluye los productos, cantidades y total.
-    """
     try:
         carrito = CarritoDeCompras.objects.get(user=request.user, section=section)
         cart_items = CartItem.objects.filter(cart=carrito).select_related('Productos', 'Productos__Categorias')
@@ -79,16 +68,14 @@ def view_cart(request, section='default_section'):
             'cart_count': total_quantity,
         }
         return Response(data, status=200)
+
     except CarritoDeCompras.DoesNotExist:
         return Response({'cart_id': None, 'cart_total': 0, 'cart_items': [], 'cart_count': 0}, status=200)
 
+#añade los productos a cartItem y crea el carrito si el usuario no tiene aun
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def add_to_cart(request, product_id, quantity, section='default_section'):
-    """
-    Agrega un producto al carrito de compras.
-    Si el producto ya está en el carrito, incrementa la cantidad.
-    """
     try:
         producto = Productos.objects.get(id=product_id)
     except Productos.DoesNotExist:
@@ -119,10 +106,6 @@ def add_to_cart(request, product_id, quantity, section='default_section'):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def remove_from_cart(request, product_id, quantity, section='default_section'):
-    """
-    Elimina una cantidad específica de un producto del carrito.
-    Si la cantidad eliminada es mayor o igual a la existente, elimina el producto.
-    """
     try:
         producto = Productos.objects.get(id=product_id)
     except Productos.DoesNotExist:
@@ -150,9 +133,6 @@ def remove_from_cart(request, product_id, quantity, section='default_section'):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def clear_cart(request):
-    """
-    Vacía el carrito de compras eliminando todos los productos que contiene.
-    """
     try:
         carrito = CarritoDeCompras.objects.get(user=request.user)
         CartItem.objects.filter(cart=carrito).delete()
@@ -162,6 +142,7 @@ def clear_cart(request):
             "cart_id": carrito.id,
             "cart_total": carrito.total,
         }, status=status.HTTP_200_OK)
+
     except CarritoDeCompras.DoesNotExist:
         return Response({"error": "No se encontró un carrito para el usuario autenticado."}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
@@ -169,27 +150,16 @@ def clear_cart(request):
 
 # Permisos para admin
 class IsAdminUser(BasePermission):
-    """
-    Permiso personalizado que permite el acceso solo a usuarios administradores.
-    """
     def has_permission(self, request, view):
         return request.user and request.user.is_staff
 
-# Registro de usuarios
+# Registro
 class RegistroView(generics.ListCreateAPIView):
-    """
-    Vista para listar y registrar nuevos usuarios.
-    Permite el acceso a cualquier usuario (autenticado o no).
-    """
     queryset = User.objects.all()
     serializer_class = RegistroSerializer
     permission_classes = [AllowAny]
 
 class RegistroDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Vista para obtener, actualizar o eliminar información de un usuario específico.
-    Solo accesible para administradores.
-    """
     queryset = User.objects.all()
     serializer_class = RegistroSerializer
     permission_classes = [IsAdminUser]
@@ -197,106 +167,63 @@ class RegistroDetail(generics.RetrieveUpdateDestroyAPIView):
     def get(self, request):
         return Response({"message": "Solo los administradores utilizan esta vista"})
 
-# Direcciones de envío
+# Direcciones_envio
 class Direcciones_envioListCreate(generics.ListCreateAPIView):
-    """
-    Vista para listar o crear direcciones de envío.
-    Permite el acceso a cualquier usuario (autenticado o no).
-    """
     queryset = Direcciones_envio.objects.all()
     serializer_class = Direcciones_envioSerializer
     permission_classes = [AllowAny]
 
 class Direcciones_envioDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Vista para obtener, actualizar o eliminar una dirección específica.
-    Permite el acceso a cualquier usuario (autenticado o no).
-    """
     queryset = Direcciones_envio.objects.all()
     serializer_class = Direcciones_envioSerializer
     permission_classes = [AllowAny]
 
-# Categorías de productos
+# Categorias
 class CategoriasListCreate(generics.ListCreateAPIView):
-    """
-    Vista para listar o crear categorías de productos.
-    Permite el acceso a cualquier usuario (autenticado o no).
-    """
     queryset = Categorias.objects.all()
     serializer_class = CategoriasSerializer
     permission_classes = [AllowAny]
 
 class CategoriasDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Vista para obtener, actualizar o eliminar una categoría específica.
-    Solo accesible para usuarios autenticados.
-    """
     queryset = Categorias.objects.all()
     serializer_class = CategoriasSerializer
     permission_classes = [IsAuthenticated]
 
 # Productos
 class ProductosListCreate(generics.ListCreateAPIView):
-    """
-    Vista para listar o crear productos.
-    Permite el acceso a cualquier usuario (autenticado o no).
-    """
     queryset = Productos.objects.all()
     serializer_class = ProductosSerializer
     permission_classes = [AllowAny]
 
 class ProductosDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Vista para obtener, actualizar o eliminar un producto específico.
-    Solo accesible para usuarios autenticados.
-    """
     queryset = Productos.objects.all()
     serializer_class = ProductosSerializer
     permission_classes = [IsAuthenticated]
 
-# Carrito de compras
+# CarritoDeCompras
 class CarritoDeComprasListCreate(generics.ListCreateAPIView):
-    """
-    Vista para listar o crear carritos de compras.
-    Permite el acceso a cualquier usuario (autenticado o no).
-    """
     queryset = CarritoDeCompras.objects.all()
     serializer_class = CarritoDeComprasSerializer
     permission_classes = [AllowAny]
 
 class CarritoDeComprasDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Vista para obtener, actualizar o eliminar un carrito de compras específico.
-    Solo accesible para usuarios autenticados.
-    """
     queryset = CarritoDeCompras.objects.all()
     serializer_class = CarritoDeComprasSerializer
     permission_classes = [IsAuthenticated]
 
-# Items en el carrito
+# CartItem
 class CartItemListCreate(generics.ListCreateAPIView):
-    """
-    Vista para listar o crear elementos en un carrito.
-    Permite el acceso a cualquier usuario (autenticado o no).
-    """
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
     permission_classes = [AllowAny]
 
 class CartItemDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Vista para obtener, actualizar o eliminar un elemento específico en un carrito.
-    Solo accesible para usuarios autenticados.
-    """
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
     permission_classes = [IsAuthenticated]
 
-# Órdenes de compra para usuarios
+# Ordenes para usuarios
 class OrdenesListCreate(generics.ListCreateAPIView):
-    """
-    Vista para listar o crear órdenes de compra asociadas al usuario autenticado.
-    """
     serializer_class = OrdenesSerializer
     permission_classes = [IsAuthenticated]
 
@@ -304,38 +231,24 @@ class OrdenesListCreate(generics.ListCreateAPIView):
         return Ordenes.objects.filter(Usuarios=self.request.user)
 
 class OrdenesDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Vista para obtener, actualizar o eliminar una orden de compra específica del usuario autenticado.
-    """
     serializer_class = OrdenesSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Ordenes.objects.filter(Usuarios=self.request.user)
 
-# Órdenes de compra para administradores
+# Ordenes admin
 class OrdenesAdminListCreate(generics.ListCreateAPIView):
-    """
-    Vista para listar o crear todas las órdenes de compra. Acceso para administradores.
-    """
     queryset = Ordenes.objects.all()
     serializer_class = OrdenesSerializer
     permission_classes = [AllowAny]
 
 class OrdenesAdminDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Vista para obtener, actualizar o eliminar cualquier orden de compra.
-    Solo accesible para usuarios autenticados.
-    """
     queryset = Ordenes.objects.all()
     serializer_class = OrdenesSerializer
     permission_classes = [IsAuthenticated]
 
 def get_ordenes_admin(request):
-    """
-    Vista para obtener una lista detallada de todas las órdenes, incluyendo productos relacionados.
-    Acceso exclusivo para administradores.
-    """
     ordenes = Ordenes.objects.select_related('carrito').prefetch_related('carrito__items__Productos').all()
     data = []
     for orden in ordenes:
@@ -354,37 +267,25 @@ def get_ordenes_admin(request):
             'fecha_orden': orden.fecha_orden,
             'estado': orden.estado,
             'usuario_nombre': orden.Usuarios.first_name,
-            'usuario_apellido': orden.Usuarios.last_name,
+            'usuario_apellido':orden.Usuarios.last_name,
             'email': orden.Usuarios.email,
             'productos': productos,
         })
+
     return JsonResponse(data, safe=False)
 
 # Pagos
 class PagosListCreate(generics.ListCreateAPIView):
-    """
-    Vista para listar o crear registros de pagos.
-    Permite el acceso a cualquier usuario (autenticado o no).
-    """
     queryset = Pagos.objects.all()
     serializer_class = PagosSerializer
     permission_classes = [AllowAny]
 
 class PagosDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Vista para obtener, actualizar o eliminar un registro de pago específico.
-    Solo accesible para usuarios autenticados.
-    """
     queryset = Pagos.objects.all()
     serializer_class = PagosSerializer
     permission_classes = [IsAuthenticated]
 
-# Sesión y autenticación
 class LoginView(generics.GenericAPIView):
-    """
-    Vista para iniciar sesión utilizando credenciales de usuario.
-    Genera y devuelve tokens de acceso y refresco JWT.
-    """
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -400,3 +301,111 @@ class LoginView(generics.GenericAPIView):
             })
         return Response({'error': 'Credenciales inválidas'}, status=400)
 
+class CrearOrdenView(APIView):
+    def post(self, request):
+        user = request.user
+        carrito_id = request.data.get("carrito_id")
+        carrito = get_object_or_404(CarritoDeCompras, id=carrito_id, user=user)
+        orden, created = Ordenes.objects.get_or_create(
+            Usuarios=user,
+            carrito=carrito,
+            defaults={'estado': 'pendiente'}
+        )
+        if not created:
+            orden.estado = 'pendiente'
+            orden.save()
+        serializer = OrdenesSerializer(orden)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@csrf_exempt
+def eliminar_pedido(request, pedido_id):
+    try:
+        pedido = Ordenes.objects.get(id=pedido_id)
+        pedido.delete()
+        return JsonResponse({"message": "Pedido eliminado con éxito."}, status=200)
+    except Ordenes.DoesNotExist:
+        return JsonResponse({"error": "Pedido no encontrado."}, status=404)
+
+@api_view(['PUT'])
+def actualizar_estado_pedido(request, pedido_id):
+    try:
+        pedido = Ordenes.objects.get(id=pedido_id)
+    except Ordenes.DoesNotExist:
+        return Response({"error": "Pedido no encontrado"}, status=404)
+
+    nuevo_estado = request.data.get('estado')
+    if nuevo_estado not in dict(Ordenes.ESTADO_Orden).keys():
+        return Response({"error": "Estado no válido"}, status=400)
+
+    pedido.estado = nuevo_estado
+    pedido.save()
+    serializer = OrdenesSerializer(pedido)
+    return Response(serializer.data, status=200)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def usuarioLogueado(request):
+    user = request.user
+    return Response({
+        "id_usuario": user.id,
+        "username": user.username,
+        "email": user.email,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+    }, status=status.HTTP_200_OK)
+
+#editar usuario
+class UpdateUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        user = request.user
+        data = request.data
+
+        user.username = data.get('username', user.username)
+        user.email = data.get('email', user.email)
+        user.first_name = data.get('first_name', user.first_name)
+        user.last_name = data.get('last_name', user.last_name)
+
+        user.save()
+        return Response({
+            "message": "Datos actualizados exitosamente.",
+            "data": {
+                "username": user.username,
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name
+            }
+        }, status=status.HTTP_200_OK)
+        
+#editar direccion
+from rest_framework import serializers, status
+from rest_framework.generics import UpdateAPIView
+from rest_framework.response import Response
+from .models import Direcciones_envio
+from .serializers import Direcciones_envioSerializer
+
+class DireccionUpdateView(UpdateAPIView):
+    queryset = Direcciones_envio.objects.all()
+    serializer_class = Direcciones_envioSerializer
+
+    def update(self, request, *args, **kwargs):
+        # Asegurarse de que el usuario está autenticado
+        if not request.user.is_authenticated:
+            return Response({"detail": "No autorizado"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Obtener la dirección que se va a actualizar
+        direccion = self.get_object()
+
+        # Asegurarse de que la dirección pertenece al usuario actual
+        if direccion.Usuarios != request.user:
+            return Response({"detail": "No autorizado a editar esta dirección"}, status=status.HTTP_403_FORBIDDEN)
+
+        # Validar y actualizar la dirección
+        serializer = self.get_serializer(direccion, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
